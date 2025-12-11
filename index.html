@@ -6,7 +6,7 @@
     <title>Fabrice Mesidor | Analytics Engineer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Basic styling - you can customize later */
+        /* Reset & Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -16,153 +16,311 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
         }
         
-        header {
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
             text-align: center;
-            padding: 40px 0;
-            border-bottom: 1px solid #eee;
         }
         
-        h1 {
-            font-size: 2.5rem;
+        .hero h1 {
+            font-size: 3.5rem;
             margin-bottom: 10px;
-            color: #2c3e50;
+            font-weight: 700;
         }
         
-        .subtitle {
-            font-size: 1.2rem;
-            color: #7f8c8d;
+        .hero .tagline {
+            font-size: 1.5rem;
+            opacity: 0.9;
             margin-bottom: 20px;
         }
         
-        .highlight {
-            color: #3498db;
-            font-weight: 600;
+        .hero .subtitle {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            opacity: 0.85;
         }
         
-        section {
-            margin: 40px 0;
-            padding: 20px;
-            border-radius: 8px;
-            background: #f9f9f9;
+        /* Content Sections */
+        .content {
+            padding: 50px 40px;
         }
         
-        h2 {
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            display: inline-block;
+        }
+        
+        .section p {
+            font-size: 1.1rem;
+            color: #34495e;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        /* Projects */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .project-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .project-card h3 {
             color: #2c3e50;
             margin-bottom: 15px;
+            font-size: 1.3rem;
         }
         
-        .tech-stack {
+        .project-card .metrics {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin: 20px 0;
+            margin: 15px 0;
         }
         
-        .tech-tag {
+        .metric {
             background: #3498db;
             color: white;
             padding: 5px 15px;
             border-radius: 20px;
             font-size: 0.9rem;
+            font-weight: 500;
         }
         
-        .contact-links {
+        /* Skills */
+        .skills-grid {
             display: flex;
-            justify-content: center;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
             margin-top: 20px;
         }
         
-        .contact-links a {
+        .skill {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            border: 2px solid #bbdefb;
+        }
+        
+        /* Contact */
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             text-decoration: none;
-            color: #3498db;
-            font-size: 1.2rem;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            padding: 15px 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
         }
         
-        .contact-links i {
-            margin-right: 5px;
+        .contact-link:hover {
+            background: #3498db;
+            color: white;
+            transform: scale(1.05);
         }
         
+        .contact-link i {
+            font-size: 1.5rem;
+        }
+        
+        /* Footer */
         footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            color: #7f8c8d;
-            font-size: 0.9rem;
+            padding: 30px;
+            background: #2c3e50;
+            color: white;
+            margin-top: 50px;
         }
         
-        .under-construction {
+        .portfolio-url {
+            color: #3498db;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-link {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+        
+        /* Under construction notice */
+        .notice {
             background: #fff3cd;
-            border: 1px solid #ffeaa7;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .notice strong {
             color: #856404;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Fabrice Mesidor</h1>
-        <p class="subtitle">Senior Analytics Engineer</p>
-        <p>Building reliable data platforms with <span class="highlight">dbt, SQL, and modern data stack tools</span></p>
-    </header>
-    
-    <section id="about">
-        <h2>About Me</h2>
-        <p>15+ years of experience transforming data into strategic assets. I specialize in building scalable, reliable data infrastructure that enables self-service analytics and drives business decisions.</p>
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <h1>Fabrice Mesidor</h1>
+            <p class="tagline">Senior Analytics Engineer</p>
+            <p class="subtitle">Building reliable data platforms with dbt, SQL, and modern data stack tools</p>
+        </header>
         
-        <p>Currently creating detailed case studies of my analytics engineering projects. Full portfolio content coming this week.</p>
+        <!-- Main Content -->
+        <main class="content">
+            <!-- About Section -->
+            <section class="section" id="about">
+                <h2>About Me</h2>
+                <p>15+ years of experience transforming data into strategic assets. I specialize in building scalable, reliable data infrastructure that enables self-service analytics and drives business decisions.</p>
+                <p>Currently creating detailed case studies of my analytics engineering projects. Full portfolio content coming this week.</p>
+                
+                <div class="notice">
+                    <strong>🚧 Portfolio in Progress</strong>
+                    <p>Detailed case studies launching this week. This is a temporary landing page.</p>
+                </div>
+            </section>
+            
+            <!-- Projects Preview -->
+            <section class="section" id="projects">
+                <h2>Featured Projects</h2>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <h3>Centralized dbt Platform at TheGuarantors</h3>
+                        <p>Built a modern data platform using dbt and Databricks to centralize analytics and improve data reliability.</p>
+                        <div class="metrics">
+                            <span class="metric">5 hours/week saved</span>
+                            <span class="metric">20% ROI improvement</span>
+                            <span class="metric">$50k+ loss prevented</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <h3>BI Stack Modernization at WayBetter</h3>
+                        <p>Migrated 20+ company-wide reports from Google Data Studio to Looker, enabling self-service analytics.</p>
+                        <div class="metrics">
+                            <span class="metric">40% fewer ad-hoc requests</span>
+                            <span class="metric">25% data reliability</span>
+                            <span class="metric">10 hours/week saved</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Skills -->
+            <section class="section" id="skills">
+                <h2>Technical Skills</h2>
+                <div class="skills-grid">
+                    <span class="skill">dbt</span>
+                    <span class="skill">SQL</span>
+                    <span class="skill">Data Modeling</span>
+                    <span class="skill">Looker</span>
+                    <span class="skill">Databricks</span>
+                    <span class="skill">Python</span>
+                    <span class="skill">Power BI</span>
+                    <span class="skill">GitHub</span>
+                    <span class="skill">ETL/ELT</span>
+                    <span class="skill">A/B Testing</span>
+                </div>
+            </section>
+            
+            <!-- Contact -->
+            <section class="section" id="contact">
+                <h2>Connect With Me</h2>
+                <div class="contact-links">
+                    <a href="https://linkedin.com/in/fabricemesidor" class="contact-link" target="_blank">
+                        <i class="fab fa-linkedin"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="https://github.com/FabriceMesidor" class="contact-link" target="_blank">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="mailto:fmesidor@me.com" class="contact-link">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email</span>
+                    </a>
+                </div>
+            </section>
+        </main>
         
-        <div class="tech-stack">
-            <span class="tech-tag">dbt</span>
-            <span class="tech-tag">SQL</span>
-            <span class="tech-tag">Data Modeling</span>
-            <span class="tech-tag">Looker</span>
-            <span class="tech-tag">Databricks</span>
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">Power BI</span>
-            <span class="tech-tag">GitHub</span>
-        </div>
-    </section>
-    
-    <section id="projects">
-        <h2>Projects</h2>
-        <div class="under-construction">
-            <strong>🛠️ Portfolio in Progress</strong>
-            <p>Detailed case studies coming soon:</p>
-            <ul>
-                <li><strong>Centralized dbt Platform at TheGuarantors:</strong> Reduced data prep time by 5 hours/week, improved marketing ROI by 20%</li>
-                <li><strong>BI Stack Modernization at WayBetter:</strong> Migrated 20+ reports to Looker, reduced ad-hoc requests by 40%</li>
-            </ul>
-        </div>
-    </section>
-    
-    <section id="contact">
-        <h2>Connect With Me</h2>
-        <div class="contact-links">
-            <a href="https://linkedin.com/in/fabricemesidor" target="_blank">
-                <i class="fab fa-linkedin"></i> LinkedIn
-            </a>
-            <a href="https://github.com/FabriceMesidor" target="_blank">
-                <i class="fab fa-github"></i> GitHub
-            </a>
-            <a href="mailto:fmesidor@me.com">
-                <i class="fas fa-envelope"></i> Email
-            </a>
-        </div>
-    </section>
-    
-    <footer>
-        <p>© 2025 Fabrice Mesidor | Portfolio: fabrice-analytics.com</p>
-        <p><small>Built with GitHub Pages</small></p>
-    </footer>
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 Fabrice Mesidor | Portfolio: <a href="https://fabrice-analytics.com" class="portfolio-url">fabrice-analytics.com</a></p>
+            <p><small>Analytics Engineering Portfolio | Built with GitHub Pages</small></p>
+        </footer>
+    </div>
 </body>
 </html>

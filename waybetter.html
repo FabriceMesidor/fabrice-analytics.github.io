@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BI Stack Modernization — WayBetter · Fabrice Mesidor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #0f0f0f;
+      --ink-muted: #555;
+      --paper:     #faf9f6;
+      --cream:     #f2f0ea;
+      --rule:      #e0ddd5;
+      --accent:    #1a3a5c;
+      --accent2:   #c8401a;
+      --mono:      'DM Mono', monospace;
+      --serif:     'DM Serif Display', serif;
+      --sans:      'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(250,249,246,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .nav-logo {
+      font-family: var(--mono); font-size: 0.85rem; font-weight: 500;
+      color: var(--ink); text-decoration: none; letter-spacing: 0.02em;
+    }
+    .nav-back {
+      font-family: var(--mono); font-size: 0.78rem; color: var(--ink-muted);
+      text-decoration: none; letter-spacing: 0.06em;
+      text-transform: uppercase; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--ink); }
+
+    .case-hero {
+      padding: 8rem 3rem 5rem;
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 4rem;
+      align-items: end;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .case-eyebrow {
+      font-family: var(--mono); font-size: 0.75rem;
+      color: var(--accent2); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 1.25rem;
+    }
+    .case-title {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 4.5vw, 4rem);
+      line-height: 1.08; margin-bottom: 1.5rem;
+    }
+    .case-title em { font-style: italic; color: var(--accent); }
+    .case-summary {
+      font-size: 1.05rem; color: var(--ink-muted);
+      line-height: 1.75; max-width: 52ch;
+    }
+    .case-meta {
+      display: flex; flex-direction: column; gap: 1rem;
+      padding: 1.75rem; border: 1px solid var(--rule);
+      background: var(--cream);
+    }
+    .meta-label {
+      font-family: var(--mono); font-size: 0.68rem;
+      color: var(--accent2); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 0.2rem;
+    }
+    .meta-val { font-size: 0.88rem; color: var(--ink); line-height: 1.4; }
+
+    .case-body {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 3rem;
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 5rem; align-items: start;
+    }
+    .case-content { padding: 4rem 0; }
+    .case-sidebar { padding: 4rem 0; position: sticky; top: 90px; }
+
+    .block { margin-bottom: 4rem; }
+    .block-label {
+      font-family: var(--mono); font-size: 0.7rem;
+      color: var(--accent2); letter-spacing: 0.14em;
+      text-transform: uppercase; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .block-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+    h2.block-title {
+      font-family: var(--serif); font-size: 1.75rem;
+      margin-bottom: 1.25rem; line-height: 1.2;
+    }
+    .prose p {
+      font-size: 0.97rem; color: var(--ink-muted);
+      line-height: 1.85; margin-bottom: 1.1rem;
+    }
+    .prose p strong { color: var(--ink); }
+    .prose p:last-child { margin-bottom: 0; }
+
+    .callout {
+      padding: 1.5rem 1.75rem;
+      border-left: 3px solid var(--accent);
+      background: var(--cream); margin: 2rem 0;
+    }
+    .callout p { font-size: 0.95rem; color: var(--ink); line-height: 1.75; font-style: italic; }
+
+    /* BEFORE/AFTER TABLE */
+    .compare-table {
+      width: 100%; border-collapse: collapse;
+      border: 1px solid var(--rule); margin: 2rem 0;
+    }
+    .compare-table th {
+      padding: 0.9rem 1.25rem;
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      border-bottom: 1px solid var(--rule);
+      text-align: left;
+    }
+    .compare-table th:first-child { background: #fff5f3; color: var(--accent2); border-right: 1px solid var(--rule); }
+    .compare-table th:last-child  { background: #f0f4f9; color: var(--accent); }
+    .compare-table td {
+      padding: 0.85rem 1.25rem;
+      font-size: 0.85rem; color: var(--ink-muted);
+      vertical-align: top; line-height: 1.6;
+      border-bottom: 1px solid var(--rule);
+    }
+    .compare-table td:first-child { border-right: 1px solid var(--rule); }
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    /* PIPELINE DIAGRAM */
+    .pipeline {
+      background: var(--cream); border: 1px solid var(--rule);
+      padding: 2.5rem; margin: 2rem 0;
+      overflow-x: auto;
+    }
+    .pipeline-label {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: var(--ink-muted); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .pipeline-row {
+      display: flex; align-items: center; gap: 0;
+      flex-wrap: nowrap; margin-bottom: 1rem;
+    }
+    .pipeline-row:last-child { margin-bottom: 0; }
+    .pipeline-step {
+      display: flex; flex-direction: column;
+      align-items: center; min-width: 110px;
+    }
+    .pipeline-box {
+      padding: 0.55rem 0.9rem;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      font-family: var(--mono); font-size: 0.68rem;
+      text-align: center; color: var(--ink);
+      width: 100%;
+    }
+    .pipeline-box.highlight {
+      background: var(--accent); color: white; border-color: var(--accent);
+    }
+    .pipeline-box.outcome {
+      background: #eef4ee; border-color: #b5d5b5; color: #2d5a2d;
+    }
+    .pipeline-sub {
+      font-family: var(--mono); font-size: 0.6rem;
+      color: var(--ink-muted); margin-top: 0.25rem;
+      text-align: center;
+    }
+    .pipeline-arrow {
+      font-family: var(--mono); font-size: 1rem;
+      color: var(--ink-muted); padding: 0 0.5rem;
+      flex-shrink: 0;
+    }
+
+    /* METRICS */
+    .metrics-row {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 0; border: 1px solid var(--rule); margin: 2rem 0;
+    }
+    .metric-card {
+      padding: 1.75rem;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+    .metric-card:nth-child(even) { border-right: none; }
+    .metric-card:nth-last-child(-n+2) { border-bottom: none; }
+    .mc-val {
+      font-family: var(--serif); font-size: 2.4rem;
+      color: var(--accent); line-height: 1; margin-bottom: 0.4rem;
+    }
+    .mc-label {
+      font-family: var(--mono); font-size: 0.7rem;
+      color: var(--ink-muted); letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .mc-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.5; }
+
+    /* CODE */
+    .code-block {
+      background: #0f1117; border: 1px solid #2a2d3a;
+      padding: 1.75rem; margin: 2rem 0; overflow-x: auto;
+    }
+    .code-block-header {
+      font-family: var(--mono); font-size: 0.68rem;
+      color: rgba(255,255,255,0.35); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .code-block pre {
+      font-family: var(--mono); font-size: 0.78rem;
+      line-height: 1.7; color: #a9b7c6; white-space: pre;
+    }
+    .c-keyword { color: #cc99cd; }
+    .c-fn      { color: #6dcff6; }
+    .c-str     { color: #7ec699; }
+    .c-comment { color: rgba(255,255,255,0.3); font-style: italic; }
+    .c-var     { color: #e8bf6a; }
+    .c-num     { color: #f08d49; }
+
+    /* SIDEBAR */
+    .sidebar-section { margin-bottom: 2.5rem; }
+    .sidebar-title {
+      font-family: var(--mono); font-size: 0.68rem;
+      color: var(--accent2); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 0.9rem;
+    }
+    .sidebar-list { list-style: none; }
+    .sidebar-list li {
+      font-size: 0.85rem; color: var(--ink-muted);
+      padding: 0.4rem 0; border-bottom: 1px solid var(--rule);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .sidebar-list li:last-child { border-bottom: none; }
+    .sidebar-list li::before { content: '—'; color: var(--accent2); font-family: var(--mono); font-size: 0.7rem; }
+    .sidebar-prev {
+      display: block; padding: 1.25rem;
+      background: var(--ink); color: var(--paper);
+      text-decoration: none; transition: background 0.2s;
+    }
+    .sidebar-prev:hover { background: var(--accent); }
+    .sidebar-prev-label {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: rgba(255,255,255,0.45); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .sidebar-prev-title { font-size: 0.9rem; color: white; line-height: 1.4; }
+
+    .lesson-list { list-style: none; }
+    .lesson-list li {
+      padding: 1.1rem 0; border-bottom: 1px solid var(--rule);
+      font-size: 0.95rem; color: var(--ink-muted);
+      line-height: 1.6;
+      display: grid; grid-template-columns: 24px 1fr; gap: 0.75rem;
+    }
+    .lesson-list li:last-child { border-bottom: none; }
+    .lesson-num { font-family: var(--mono); font-size: 0.72rem; color: var(--accent2); padding-top: 0.1rem; }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .case-hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 2.5rem; }
+      .case-body { grid-template-columns: 1fr; gap: 0; padding: 0 1.5rem; }
+      .case-sidebar { position: static; padding: 0 0 4rem; }
+      .metrics-row { grid-template-columns: 1fr 1fr; }
+      .pipeline-row { flex-wrap: wrap; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">FM / Analytics Engineer</a>
+    <a href="index.html#work" class="nav-back">← All Work</a>
+  </nav>
+
+  <header class="case-hero">
+    <div>
+      <p class="case-eyebrow">Case Study 02 · WayBetter · Consumer Health / SaaS</p>
+      <h1 class="case-title">BI Stack<br /><em>Modernization</em></h1>
+      <p class="case-summary">
+        Rebuilt WayBetter's entire analytics layer — replacing fragmented Google Data Studio
+        reports with a production dbt + Looker platform that eliminated manual reporting,
+        surfaced churn drivers, and gave every team self-service access to reliable data.
+      </p>
+    </div>
+    <div class="case-meta">
+      <div class="meta-item">
+        <div class="meta-label">Company</div>
+        <div class="meta-val">WayBetter</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Timeline</div>
+        <div class="meta-val">August 2020 – June 2022</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Role</div>
+        <div class="meta-val">Business Intelligence Analyst</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Stack</div>
+        <div class="meta-val">dbt · Looker · Databricks · SQL · Segment · Python</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="case-body">
+    <main class="case-content">
+
+      <!-- PROBLEM -->
+      <div class="block">
+        <div class="block-label">01</div>
+        <h2 class="block-title">The Problem</h2>
+        <div class="prose">
+          <p>
+            WayBetter ran a behavioral change platform — people bet money on achieving their
+            health goals. The product had strong engagement, but the analytics stack was a liability.
+            Twenty-plus live reports were built directly in Google Data Studio against raw database
+            tables, with SQL written inline and no version control. Any schema change downstream
+            could silently break reports that leadership checked every morning.
+          </p>
+          <p>
+            The manual reporting burden was severe. <strong>Ten hours per week</strong> went to
+            pulling data, formatting spreadsheets, and emailing metrics to stakeholders who could
+            have looked it up themselves. The analytics team was reactive — fielding ad-hoc requests
+            all day instead of doing analysis that moved the business.
+          </p>
+          <p>
+            More critically: no one had a clean picture of <strong>why users churned</strong>.
+            There was event data in Segment, but it wasn't modeled. Anonymous user sessions weren't
+            being joined to authenticated accounts. The behavioral signals that predicted churn were
+            sitting in raw tables, untouched.
+          </p>
+        </div>
+        <div class="callout">
+          <p>"Ten hours per week went to manual reporting. The analytics team was fully reactive — fielding ad-hoc data requests instead of asking and answering the questions that mattered."</p>
+        </div>
+      </div>
+
+      <!-- BEFORE/AFTER -->
+      <div class="block">
+        <div class="block-label">02</div>
+        <h2 class="block-title">Before &amp; After</h2>
+
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Before</th>
+              <th>After</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>20+ reports in Google Data Studio with inline SQL</td>
+              <td>20+ reports in Looker built on versioned dbt models</td>
+            </tr>
+            <tr>
+              <td>No testing — broken reports discovered by stakeholders</td>
+              <td>300+ dbt tests running in CI; failures block deployment</td>
+            </tr>
+            <tr>
+              <td>10 hours/week of manual reporting tasks</td>
+              <td>Fully automated; zero manual exports</td>
+            </tr>
+            <tr>
+              <td>Anonymous Segment events not joined to users</td>
+              <td>Sessionized event pipeline with anonymous→user ID mapping</td>
+            </tr>
+            <tr>
+              <td>No self-service — every question required an analyst</td>
+              <td>Business users answer their own questions in Looker</td>
+            </tr>
+            <tr>
+              <td>No documented churn model</td>
+              <td>Churn driver analysis informed a retention campaign: −10% churn Q4 2021</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- APPROACH -->
+      <div class="block">
+        <div class="block-label">03</div>
+        <h2 class="block-title">The Migration Approach</h2>
+        <div class="prose">
+          <p>
+            The biggest mistake I see in BI migrations is trying to lift-and-shift: taking every
+            existing report and rebuilding it exactly in the new tool. That approach preserves all
+            the debt and misses the opportunity to fix the underlying problems.
+          </p>
+          <p>
+            Instead, I started with the <strong>most-used, highest-trust reports</strong> and
+            rebuilt them properly — staging models from source, intermediate transformations,
+            mart-level fact and dimension tables, and then Looker Explores on top. Each migration
+            was a chance to add tests, clean up column names, and document what the data actually
+            meant.
+          </p>
+        </div>
+
+        <div class="pipeline">
+          <div class="pipeline-label">ELT Pipeline — Segment to Looker</div>
+          <div class="pipeline-row">
+            <div class="pipeline-step">
+              <div class="pipeline-box">Segment</div>
+              <div class="pipeline-sub">raw events</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-box">Databricks</div>
+              <div class="pipeline-sub">raw landing</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-box highlight">dbt staging</div>
+              <div class="pipeline-sub">stg_events</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-box highlight">dbt intermediate</div>
+              <div class="pipeline-sub">sessionization</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-box highlight">dbt mart</div>
+              <div class="pipeline-sub">fct_user_behavior</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-box outcome">Looker</div>
+              <div class="pipeline-sub">self-service</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>
+            The most technically involved piece was the <strong>event sessionization pipeline</strong>.
+            WayBetter's product collected rich behavioral data via Segment — page views, game
+            actions, challenge completions — but anonymous and authenticated events weren't linked.
+            A user who browsed the app before signing up left a trail of anonymous events that
+            were completely disconnected from their post-signup behavior.
+          </p>
+          <p>
+            I built an intermediate dbt model that resolved this identity graph: for each
+            authenticated user, find the anonymous ID(s) that preceded their first login using a
+            window function approach, then backfill the pre-signup events with the resolved user ID.
+            This gave us a <strong>complete behavioral timeline</strong> per user — from first touch
+            through churn or retention.
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">models/intermediate/int_user_identity_graph.sql</div>
+          <pre><span class="c-comment">-- Resolve anonymous → authenticated user identity</span>
+<span class="c-keyword">WITH</span> <span class="c-var">login_events</span> <span class="c-keyword">AS</span> (
+  <span class="c-comment">-- First time we see an authenticated user_id for an anonymous_id</span>
+  <span class="c-keyword">SELECT</span>
+    anonymous_id,
+    user_id,
+    <span class="c-fn">MIN</span>(event_timestamp) <span class="c-keyword">AS</span> identified_at
+  <span class="c-keyword">FROM</span> {{ <span class="c-fn">ref</span>(<span class="c-str">'stg_segment_identify'</span>) }}
+  <span class="c-keyword">WHERE</span> user_id <span class="c-keyword">IS NOT NULL</span>
+  <span class="c-keyword">GROUP BY</span> <span class="c-num">1</span>, <span class="c-num">2</span>
+),
+
+<span class="c-var">resolved</span> <span class="c-keyword">AS</span> (
+  <span class="c-comment">-- Join all events back to their resolved user_id</span>
+  <span class="c-keyword">SELECT</span>
+    e.event_id,
+    e.anonymous_id,
+    <span class="c-fn">COALESCE</span>(e.user_id, li.user_id) <span class="c-keyword">AS</span> resolved_user_id,
+    e.event_timestamp,
+    e.event_type,
+    <span class="c-keyword">CASE</span>
+      <span class="c-keyword">WHEN</span> e.user_id <span class="c-keyword">IS NULL AND</span> li.user_id <span class="c-keyword">IS NOT NULL</span>
+        <span class="c-keyword">THEN</span> <span class="c-str">'pre_signup'</span>
+      <span class="c-keyword">WHEN</span> e.user_id <span class="c-keyword">IS NOT NULL</span>
+        <span class="c-keyword">THEN</span> <span class="c-str">'authenticated'</span>
+      <span class="c-keyword">ELSE</span> <span class="c-str">'anonymous_unresolved'</span>
+    <span class="c-keyword">END</span> <span class="c-keyword">AS</span> identity_state
+  <span class="c-keyword">FROM</span> {{ <span class="c-fn">ref</span>(<span class="c-str">'stg_segment_events'</span>) }} e
+  <span class="c-keyword">LEFT JOIN</span> <span class="c-var">login_events</span> li
+    <span class="c-keyword">ON</span> e.anonymous_id = li.anonymous_id
+)
+
+<span class="c-keyword">SELECT</span> * <span class="c-keyword">FROM</span> <span class="c-var">resolved</span></pre>
+        </div>
+      </div>
+
+      <!-- CHURN ANALYSIS -->
+      <div class="block">
+        <div class="block-label">04</div>
+        <h2 class="block-title">Churn Driver Analysis</h2>
+        <div class="prose">
+          <p>
+            With a clean behavioral timeline, the churn analysis became tractable. I built a
+            cohort model in dbt that tracked each user's engagement trajectory from signup through
+            their first 30 days — the window that statistically predicted long-term retention.
+          </p>
+          <p>
+            The analysis surfaced a clear pattern: users who completed their first game action
+            within 48 hours of signup had dramatically higher 90-day retention. Users who signed
+            up but didn't complete that action within the window churned at nearly double the rate.
+            The implication was direct: <strong>the product needed an onboarding intervention</strong>
+            that drove users to their first game completion faster.
+          </p>
+          <p>
+            These findings were presented to the product and marketing teams as a Looker dashboard —
+            not a one-time slide deck, but a live view that any stakeholder could filter and explore.
+            Marketing used it to design a targeted re-engagement campaign focused specifically on
+            users who signed up but hadn't yet activated. The campaign ran in Q4 2021 and
+            <strong>reduced churn by 10%</strong>.
+          </p>
+        </div>
+        <div class="callout">
+          <p>"The analysis was only possible because the event sessionization pipeline existed. Without clean, complete user timelines — with pre-signup behavior attached — the activation signal would have been invisible in the data."</p>
+        </div>
+      </div>
+
+      <!-- LOOKER MIGRATION -->
+      <div class="block">
+        <div class="block-label">05</div>
+        <h2 class="block-title">The Looker Migration</h2>
+        <div class="prose">
+          <p>
+            Migrating 20+ reports isn't just a technical task — it's a change management project.
+            Stakeholders have muscle memory around their existing dashboards. If the new versions
+            look different or behave slightly differently, they'll distrust them even if the numbers
+            are more accurate.
+          </p>
+          <p>
+            I handled this in three phases. <strong>Phase one:</strong> rebuild the most-used reports
+            in Looker exactly as they existed in Data Studio, so stakeholders had a reference point.
+            <strong>Phase two:</strong> run both versions in parallel for two weeks, addressing any
+            discrepancies (which were always opportunities to fix data quality issues). <strong>Phase
+            three:</strong> train every user with a 45-minute live session and a written reference
+            guide, then sunset the old reports.
+          </p>
+          <p>
+            The training investment paid off immediately. Within a month of migration, stakeholders
+            were building their own Explores — filtering by date, cohort, and product segment without
+            waiting for analyst support. <strong>Ad-hoc data requests dropped by 40%</strong>, and
+            the analytics team shifted from reactive to proactive.
+          </p>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="block">
+        <div class="block-label">06</div>
+        <h2 class="block-title">Results</h2>
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="mc-val">−40%</div>
+            <div class="mc-label">Ad-hoc Requests</div>
+            <div class="mc-desc">After Looker migration — teams moved from requesting data to finding it themselves</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-val">−10 hrs</div>
+            <div class="mc-label">Manual Reporting</div>
+            <div class="mc-desc">Per week, fully automated via dbt pipelines and scheduled Looker dashboards</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-val">+25%</div>
+            <div class="mc-label">Data Reliability</div>
+            <div class="mc-desc">Measured by reduction in data errors and failed report loads</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-val">−10% churn</div>
+            <div class="mc-label">Q4 2021 Retention</div>
+            <div class="mc-desc">Driven by campaign informed by event sessionization analysis</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-val">+5%</div>
+            <div class="mc-label">User Conversion</div>
+            <div class="mc-desc">Marketing team optimized campaign spend using lifecycle dashboards</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-val">300+</div>
+            <div class="mc-label">dbt Tests Deployed</div>
+            <div class="mc-desc">Running in CI — broken models no longer reach production silently</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSONS -->
+      <div class="block">
+        <div class="block-label">07</div>
+        <h2 class="block-title">Lessons Learned</h2>
+        <ul class="lesson-list">
+          <li>
+            <span class="lesson-num">01</span>
+            <span><strong>Migration is change management, not just engineering.</strong> The technical work was the smaller half of this project. Stakeholder buy-in, parallel running periods, and real training sessions determined whether the new platform actually got used.</span>
+          </li>
+          <li>
+            <span class="lesson-num">02</span>
+            <span><strong>Event data is worthless without identity resolution.</strong> Segment collected excellent behavioral signals, but they were siloed by session. The work to stitch anonymous and authenticated events together was what unlocked the churn analysis — and it required careful business rule definition before any code was written.</span>
+          </li>
+          <li>
+            <span class="lesson-num">03</span>
+            <span><strong>Self-service requires investment in the model layer, not just the BI tool.</strong> Looker didn't create self-service on its own. The dbt models underneath had to be designed for the questions people wanted to ask — clean joins, sensible grain, documented fields. The BI tool is the interface; the data model is the product.</span>
+          </li>
+          <li>
+            <span class="lesson-num">04</span>
+            <span><strong>Parallel running periods are non-negotiable.</strong> Every discrepancy between old and new during the two-week overlap was a data quality bug that had been silently producing wrong numbers. Finding them before sunset — not after — was what made the migration trustworthy.</span>
+          </li>
+        </ul>
+      </div>
+
+    </main>
+
+    <aside class="case-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Tech Stack</div>
+        <ul class="sidebar-list">
+          <li>dbt Core</li>
+          <li>Looker (LookML)</li>
+          <li>Databricks</li>
+          <li>SQL</li>
+          <li>Segment</li>
+          <li>Python</li>
+          <li>Google Data Studio</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">Key Techniques</div>
+        <ul class="sidebar-list">
+          <li>Event Sessionization</li>
+          <li>Anonymous→User ID Resolution</li>
+          <li>Cohort Retention Modeling</li>
+          <li>Churn Driver Analysis</li>
+          <li>dbt Testing (300+ tests)</li>
+          <li>BI Platform Migration</li>
+          <li>Stakeholder Training</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <a href="theguarantors.html" class="sidebar-prev">
+          <div class="sidebar-prev-label">← Previous Case Study</div>
+          <div class="sidebar-prev-title">Centralized dbt Platform at TheGuarantors</div>
+        </a>
+      </div>
+    </aside>
+  </div>
+
+</body>
+</html>

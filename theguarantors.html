@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centralized dbt Platform — TheGuarantors · Fabrice Mesidor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #0f0f0f;
+      --ink-muted: #555;
+      --paper:     #faf9f6;
+      --cream:     #f2f0ea;
+      --rule:      #e0ddd5;
+      --accent:    #1a3a5c;
+      --accent2:   #c8401a;
+      --mono:      'DM Mono', monospace;
+      --serif:     'DM Serif Display', serif;
+      --sans:      'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(250,249,246,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .nav-logo {
+      font-family: var(--mono); font-size: 0.85rem; font-weight: 500;
+      color: var(--ink); text-decoration: none; letter-spacing: 0.02em;
+    }
+    .nav-back {
+      font-family: var(--mono); font-size: 0.78rem; color: var(--ink-muted);
+      text-decoration: none; letter-spacing: 0.06em;
+      text-transform: uppercase; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--ink); }
+
+    /* ── HERO ── */
+    .case-hero {
+      padding: 8rem 3rem 5rem;
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 4rem;
+      align-items: end;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .case-eyebrow {
+      font-family: var(--mono); font-size: 0.75rem;
+      color: var(--accent2); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 1.25rem;
+    }
+    .case-title {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 4.5vw, 4rem);
+      line-height: 1.08;
+      margin-bottom: 1.5rem;
+    }
+    .case-title em { font-style: italic; color: var(--accent); }
+    .case-summary {
+      font-size: 1.05rem; color: var(--ink-muted);
+      line-height: 1.75; max-width: 52ch;
+    }
+    .case-meta {
+      display: flex; flex-direction: column; gap: 1rem;
+      padding: 1.75rem;
+      border: 1px solid var(--rule);
+      background: var(--cream);
+    }
+    .meta-item {}
+    .meta-label {
+      font-family: var(--mono); font-size: 0.68rem;
+      color: var(--accent2); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 0.2rem;
+    }
+    .meta-val { font-size: 0.88rem; color: var(--ink); line-height: 1.4; }
+
+    /* ── LAYOUT ── */
+    .case-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 3rem;
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 5rem;
+      align-items: start;
+    }
+    .case-content { padding: 4rem 0; }
+    .case-sidebar {
+      padding: 4rem 0;
+      position: sticky;
+      top: 90px;
+    }
+
+    /* ── CONTENT BLOCKS ── */
+    .block { margin-bottom: 4rem; }
+    .block-label {
+      font-family: var(--mono); font-size: 0.7rem;
+      color: var(--accent2); letter-spacing: 0.14em;
+      text-transform: uppercase; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .block-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--rule);
+    }
+    h2.block-title {
+      font-family: var(--serif); font-size: 1.75rem;
+      margin-bottom: 1.25rem; line-height: 1.2;
+    }
+    .prose p {
+      font-size: 0.97rem; color: var(--ink-muted);
+      line-height: 1.85; margin-bottom: 1.1rem;
+    }
+    .prose p strong { color: var(--ink); }
+    .prose p:last-child { margin-bottom: 0; }
+
+    /* ── CALLOUT ── */
+    .callout {
+      padding: 1.5rem 1.75rem;
+      border-left: 3px solid var(--accent);
+      background: var(--cream);
+      margin: 2rem 0;
+    }
+    .callout p {
+      font-size: 0.95rem; color: var(--ink); line-height: 1.75;
+      font-style: italic;
+    }
+
+    /* ── METRIC CARDS ── */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      border: 1px solid var(--rule);
+      margin: 2rem 0;
+    }
+    .metric-card {
+      padding: 1.75rem;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+    .metric-card:nth-child(even) { border-right: none; }
+    .metric-card:last-child,
+    .metric-card:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+    .metric-card:nth-last-child(-n+2) { border-bottom: none; }
+    .mc-val {
+      font-family: var(--serif); font-size: 2.4rem;
+      color: var(--accent); line-height: 1; margin-bottom: 0.4rem;
+    }
+    .mc-label {
+      font-family: var(--mono); font-size: 0.7rem;
+      color: var(--ink-muted); letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .mc-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.5; }
+
+    /* ── CODE BLOCK ── */
+    .code-block {
+      background: #0f1117;
+      border: 1px solid #2a2d3a;
+      border-radius: 0;
+      padding: 1.75rem;
+      margin: 2rem 0;
+      overflow-x: auto;
+    }
+    .code-block-header {
+      font-family: var(--mono); font-size: 0.68rem;
+      color: rgba(255,255,255,0.35); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .code-block pre {
+      font-family: var(--mono); font-size: 0.78rem;
+      line-height: 1.7; color: #a9b7c6; white-space: pre;
+    }
+    .c-keyword { color: #cc99cd; }
+    .c-fn      { color: #6dcff6; }
+    .c-str     { color: #7ec699; }
+    .c-comment { color: rgba(255,255,255,0.3); font-style: italic; }
+    .c-var     { color: #e8bf6a; }
+    .c-num     { color: #f08d49; }
+
+    /* ── ARCH DIAGRAM (CSS-only) ── */
+    .arch-diagram {
+      background: var(--cream);
+      border: 1px solid var(--rule);
+      padding: 2.5rem;
+      margin: 2rem 0;
+    }
+    .arch-row {
+      display: flex; gap: 0; justify-content: center;
+      align-items: center; margin-bottom: 1.5rem;
+    }
+    .arch-row:last-child { margin-bottom: 0; }
+    .arch-box {
+      padding: 0.6rem 1.1rem;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      font-family: var(--mono); font-size: 0.72rem;
+      text-align: center; color: var(--ink);
+      min-width: 110px;
+    }
+    .arch-box.highlight {
+      background: var(--accent); color: white;
+      border-color: var(--accent);
+    }
+    .arch-box.mid {
+      background: var(--cream);
+    }
+    .arch-arrow {
+      font-family: var(--mono); font-size: 0.9rem;
+      color: var(--ink-muted); padding: 0 0.6rem;
+    }
+    .arch-label {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: var(--ink-muted); letter-spacing: 0.1em;
+      text-transform: uppercase; text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .arch-col {
+      display: flex; flex-direction: column;
+      gap: 0.5rem; align-items: center;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar-section { margin-bottom: 2.5rem; }
+    .sidebar-title {
+      font-family: var(--mono); font-size: 0.68rem;
+      color: var(--accent2); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 0.9rem;
+    }
+    .sidebar-list { list-style: none; }
+    .sidebar-list li {
+      font-size: 0.85rem; color: var(--ink-muted);
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--rule);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .sidebar-list li:last-child { border-bottom: none; }
+    .sidebar-list li::before {
+      content: '—'; color: var(--accent2); font-family: var(--mono);
+      font-size: 0.7rem;
+    }
+    .sidebar-next {
+      display: block; padding: 1.25rem;
+      background: var(--ink); color: var(--paper);
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .sidebar-next:hover { background: var(--accent); }
+    .sidebar-next-label {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: rgba(255,255,255,0.45); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .sidebar-next-title { font-size: 0.9rem; color: white; line-height: 1.4; }
+
+    /* ── LESSONS ── */
+    .lesson-list { list-style: none; }
+    .lesson-list li {
+      padding: 1.1rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.95rem; color: var(--ink-muted);
+      line-height: 1.6;
+      display: grid; grid-template-columns: 24px 1fr; gap: 0.75rem;
+    }
+    .lesson-list li:last-child { border-bottom: none; }
+    .lesson-num {
+      font-family: var(--mono); font-size: 0.72rem;
+      color: var(--accent2); padding-top: 0.1rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .case-hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 2.5rem; }
+      .case-body { grid-template-columns: 1fr; gap: 0; padding: 0 1.5rem; }
+      .case-sidebar { position: static; padding: 0 0 4rem; }
+      .metrics-row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">FM / Analytics Engineer</a>
+    <a href="index.html#work" class="nav-back">← All Work</a>
+  </nav>
+
+  <!-- HERO -->
+  <header class="case-hero">
+    <div>
+      <p class="case-eyebrow">Case Study 01 · TheGuarantors · Fintech / Housing</p>
+      <h1 class="case-title">Centralized<br /><em>dbt Platform</em></h1>
+      <p class="case-summary">
+        Built TheGuarantors' first analytics engineering platform from scratch —
+        replacing fragmented Excel exports and competing metric definitions with a
+        single, trusted data infrastructure that the whole company relied on.
+      </p>
+    </div>
+    <div class="case-meta">
+      <div class="meta-item">
+        <div class="meta-label">Company</div>
+        <div class="meta-val">TheGuarantors</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Timeline</div>
+        <div class="meta-val">June 2022 – Present</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Role</div>
+        <div class="meta-val">Senior Analytics Engineer<br />(Previously Data Engineer / Senior Data Analyst)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Stack</div>
+        <div class="meta-val">dbt · Databricks · SQL · Python · Power BI · Atlan</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="case-body">
+    <main class="case-content">
+
+      <!-- PROBLEM -->
+      <div class="block">
+        <div class="block-label">01</div>
+        <h2 class="block-title">The Problem</h2>
+        <div class="prose">
+          <p>
+            When I joined TheGuarantors, the company had grown quickly but its data infrastructure
+            hadn't kept pace. Marketing pulled CSV exports from eight different platforms every Monday
+            morning and spent four to five hours stitching them together in Excel. Product managers
+            waited three to five days for experiment results because analysts were backlogged with
+            data extraction requests.
+          </p>
+          <p>
+            The more critical problem was trust. Different departments calculated the same metrics
+            differently. "Customer acquisition cost" meant one thing to Finance and something else
+            entirely to Marketing. Leadership meetings regularly stalled while people debated whose
+            numbers were right — which meant decisions were slow, and the underlying data problems
+            kept compounding.
+          </p>
+          <p>
+            There was no centralized warehouse, no documented data models, and no single source of
+            truth. The company needed an analytics engineering layer — not more dashboards on top of
+            messy data, but <strong>clean, tested, documented data models that everyone could trust.</strong>
+          </p>
+        </div>
+        <div class="callout">
+          <p>"Different departments calculated the same metrics differently. Leadership meetings regularly stalled while people debated whose numbers were right."</p>
+        </div>
+      </div>
+
+      <!-- ARCHITECTURE -->
+      <div class="block">
+        <div class="block-label">02</div>
+        <h2 class="block-title">Architecture &amp; Approach</h2>
+        <div class="prose">
+          <p>
+            The core principle was simple: <strong>build from the source outward</strong>, and
+            don't expose anything to the business until it has tests on it.
+          </p>
+        </div>
+
+        <div class="arch-diagram">
+          <div class="arch-label">Data Flow — Source to Consumption</div>
+          <div class="arch-row">
+            <div class="arch-col">
+              <div class="arch-box">Salesforce</div>
+              <div class="arch-box">Marketing APIs</div>
+              <div class="arch-box">Internal DBs</div>
+              <div class="arch-box">Event Streams</div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-col">
+              <div class="arch-box mid">stg_*<br />staging models</div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-col">
+              <div class="arch-box mid">int_*<br />intermediate</div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-col">
+              <div class="arch-box highlight">mart_*<br />business marts</div>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-col">
+              <div class="arch-box">Power BI</div>
+              <div class="arch-box">Analysts</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>
+            I structured the dbt project in three layers. <strong>Staging models</strong> are
+            source-specific: one model per source table, renaming columns to consistent conventions
+            and casting types. Nothing else — no business logic here. <strong>Intermediate models</strong>
+            handle reusable transformations: sessionization logic, identity resolution (mapping
+            anonymous IDs to authenticated user IDs), and common business rules. <strong>Mart models</strong>
+            are the business-facing layer: Kimball-style fact and dimension tables designed around
+            the questions real teams ask.
+          </p>
+          <p>
+            Every mart model gets a full suite of dbt tests before it's promoted to production:
+            uniqueness, not-null, referential integrity, and custom threshold tests for business
+            logic. If a test fails in CI, the model doesn't deploy.
+          </p>
+          <p>
+            On top of the model layer, I built an <strong>event sessionization pipeline</strong>
+            that handled anonymous-to-user ID mapping — critical for attributing pre-signup
+            behavior to converted customers. This gave product and marketing their first reliable
+            view of the full customer funnel.
+          </p>
+        </div>
+      </div>
+
+      <!-- CODE SAMPLE -->
+      <div class="block">
+        <div class="block-label">03</div>
+        <h2 class="block-title">Implementation Detail</h2>
+        <div class="prose">
+          <p>
+            A representative example: the anomaly detection layer I built used a rolling average
+            approach inside dbt, calling a custom Python script when threshold deviations were
+            detected. Here's a simplified version of the core pattern:
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">models/monitoring/anomaly_detection.sql</div>
+          <pre><span class="c-comment">-- Rolling 7-day baseline vs. today's actual</span>
+<span class="c-keyword">WITH</span> <span class="c-var">daily_metrics</span> <span class="c-keyword">AS</span> (
+  <span class="c-keyword">SELECT</span>
+    metric_date,
+    metric_name,
+    metric_value,
+    <span class="c-fn">AVG</span>(metric_value) <span class="c-keyword">OVER</span> (
+      <span class="c-keyword">PARTITION BY</span> metric_name
+      <span class="c-keyword">ORDER BY</span> metric_date
+      <span class="c-keyword">ROWS BETWEEN</span> <span class="c-num">7</span> <span class="c-keyword">PRECEDING AND</span> <span class="c-num">1</span> <span class="c-keyword">PRECEDING</span>
+    ) <span class="c-keyword">AS</span> rolling_avg,
+    <span class="c-fn">STDDEV</span>(metric_value) <span class="c-keyword">OVER</span> (
+      <span class="c-keyword">PARTITION BY</span> metric_name
+      <span class="c-keyword">ORDER BY</span> metric_date
+      <span class="c-keyword">ROWS BETWEEN</span> <span class="c-num">7</span> <span class="c-keyword">PRECEDING AND</span> <span class="c-num">1</span> <span class="c-keyword">PRECEDING</span>
+    ) <span class="c-keyword">AS</span> rolling_stddev
+  <span class="c-keyword">FROM</span> {{ <span class="c-fn">ref</span>(<span class="c-str">'mart_daily_metrics'</span>) }}
+),
+
+<span class="c-var">flagged</span> <span class="c-keyword">AS</span> (
+  <span class="c-keyword">SELECT</span>
+    *,
+    <span class="c-fn">ABS</span>(metric_value - rolling_avg) / <span class="c-fn">NULLIF</span>(rolling_stddev, <span class="c-num">0</span>)
+      <span class="c-keyword">AS</span> z_score
+  <span class="c-keyword">FROM</span> <span class="c-var">daily_metrics</span>
+)
+
+<span class="c-keyword">SELECT</span> *
+<span class="c-keyword">FROM</span> <span class="c-var">flagged</span>
+<span class="c-keyword">WHERE</span>
+  metric_date = <span class="c-fn">CURRENT_DATE</span>()
+  <span class="c-keyword">AND</span> z_score > <span class="c-num">2.5</span>  <span class="c-comment">-- flag 2.5σ deviations</span>
+  <span class="c-keyword">AND</span> rolling_avg <span class="c-keyword">IS NOT NULL</span></pre>
+        </div>
+
+        <div class="prose">
+          <p>
+            This model runs nightly. When it returns rows, a downstream Python script fires a
+            Slack alert to the relevant team with the metric name, expected range, and actual value.
+            It was this framework that caught the <strong>40% drop in main-page traffic</strong> —
+            the product team had the alert, diagnosed the issue, and deployed a fix within 24 hours.
+          </p>
+        </div>
+      </div>
+
+      <!-- DATA QUALITY -->
+      <div class="block">
+        <div class="block-label">04</div>
+        <h2 class="block-title">Data Quality &amp; Governance</h2>
+        <div class="prose">
+          <p>
+            Shipping dbt models is the easy part. Getting an organization to trust them is harder.
+            I approached governance in three ways.
+          </p>
+          <p>
+            First, <strong>every model had tests before anyone consumed it</strong>. I wrote
+            a test coverage policy: staging models need uniqueness and not-null tests on primary keys;
+            mart models need the full suite plus at least one business-logic custom test. CI blocks
+            deployment on failures — no exceptions.
+          </p>
+          <p>
+            Second, I built <strong>metric definitions into the documentation itself</strong>.
+            Every model in the mart layer has a <code>description</code> in schema.yml that defines
+            the business rule in plain language — not just "customer_id" but "the unique identifier
+            assigned at account creation, distinct from prospect IDs generated before signup."
+            I then imported these into an Atlan catalog so non-technical stakeholders could search
+            definitions without opening dbt.
+          </p>
+          <p>
+            Third, I established a <strong>data change process</strong>: any modification to a
+            mart-layer model required a PR review and a Slack notification to downstream consumers.
+            This sounds bureaucratic but it's what separates a data platform that teams abandon
+            after six months from one that becomes load-bearing infrastructure.
+          </p>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="block">
+        <div class="block-label">05</div>
+        <h2 class="block-title">Results</h2>
+
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="mc-val">90%</div>
+            <div class="mc-label">Metric Consistency</div>
+            <div class="mc-desc">Reduction in cross-team metric inconsistencies after single source of truth was established</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-val">−5 hrs</div>
+            <div class="mc-label">Weekly Prep Time</div>
+            <div class="mc-desc">Per marketer, every week — for 12 marketers that's 60 hours/month returned to strategy</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-val">+20%</div>
+            <div class="mc-label">Marketing ROI</div>
+            <div class="mc-desc">Driven by spend analysis that became possible once attribution data was reliable</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-val">$50k+</div>
+            <div class="mc-label">Revenue Protected</div>
+            <div class="mc-desc">Estimated loss prevented by anomaly detection catching a 40% traffic drop in under 24 hours</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-val">−50%</div>
+            <div class="mc-label">Onboarding Time</div>
+            <div class="mc-desc">New analyst ramp time reduced via searchable data catalog and documented models</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-val">+15%</div>
+            <div class="mc-label">On-Time Delivery</div>
+            <div class="mc-desc">Project delivery improvement after real-time KPI monitoring framework launched</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSONS -->
+      <div class="block">
+        <div class="block-label">06</div>
+        <h2 class="block-title">Lessons Learned</h2>
+        <ul class="lesson-list">
+          <li>
+            <span class="lesson-num">01</span>
+            <span><strong>Start with the consumer, not the source.</strong> I initially modeled based on what the data looked like. The second iteration — starting with what business users actually needed to answer — was far more durable. The mart layer became stable because it was organized around business questions, not system structure.</span>
+          </li>
+          <li>
+            <span class="lesson-num">02</span>
+            <span><strong>Documentation is a first-class deliverable.</strong> Every hour I spent writing clear model descriptions paid back tenfold in avoided Slack messages. Analysts stopped asking "what does this field mean?" and started asking better questions.</span>
+          </li>
+          <li>
+            <span class="lesson-num">03</span>
+            <span><strong>Ship an imperfect v1 fast, then iterate.</strong> The first version of the platform had gaps and technical debt. But it was live in weeks, not months — and real usage surfaced the actual pain points far more accurately than requirements documents would have.</span>
+          </li>
+          <li>
+            <span class="lesson-num">04</span>
+            <span><strong>Identity resolution is harder than it looks.</strong> The anonymous-to-user ID mapping work was the most complex part of the event pipeline. The edge cases — users switching devices, multiple accounts, session timeouts — required careful business rule definition before any SQL was written.</span>
+          </li>
+        </ul>
+      </div>
+
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="case-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Tech Stack</div>
+        <ul class="sidebar-list">
+          <li>dbt Core &amp; Cloud</li>
+          <li>Databricks</li>
+          <li>SQL</li>
+          <li>Python</li>
+          <li>Power BI</li>
+          <li>Atlan</li>
+          <li>AWS S3</li>
+          <li>GitHub Actions</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">Key Techniques</div>
+        <ul class="sidebar-list">
+          <li>Kimball Dimensional Modeling</li>
+          <li>Event Sessionization</li>
+          <li>Anonymous→User ID Mapping</li>
+          <li>dbt Testing &amp; CI/CD</li>
+          <li>Rolling-Window Anomaly Detection</li>
+          <li>Data Catalog (Atlan)</li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <a href="waybetter.html" class="sidebar-next">
+          <div class="sidebar-next-label">Next Case Study →</div>
+          <div class="sidebar-next-title">BI Stack Modernization at WayBetter</div>
+        </a>
+      </div>
+    </aside>
+  </div>
+
+</body>
+</html>

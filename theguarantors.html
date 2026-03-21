@@ -132,6 +132,31 @@
     .prose p strong { color: var(--ink); }
     .prose p:last-child { margin-bottom: 0; }
 
+    /* ── PROCESS STEPS ── */
+    .process-steps {
+      display: flex; flex-direction: column; gap: 0;
+      border: 1px solid var(--rule); margin: 2rem 0;
+    }
+    .process-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      border-bottom: 1px solid var(--rule);
+    }
+    .process-step:last-child { border-bottom: none; }
+    .step-num {
+      background: var(--cream);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 0.72rem;
+      color: var(--accent2); border-right: 1px solid var(--rule);
+      padding: 1.25rem 0;
+    }
+    .step-body { padding: 1.25rem 1.5rem; }
+    .step-title {
+      font-size: 0.92rem; font-weight: 600;
+      color: var(--ink); margin-bottom: 0.35rem;
+    }
+    .step-desc { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.65; }
+
     /* ── CALLOUT ── */
     .callout {
       padding: 1.5rem 1.75rem;
@@ -435,9 +460,90 @@
         </div>
       </div>
 
-      <!-- CODE SAMPLE -->
+      <!-- PROCESS STEPS -->
       <div class="block">
         <div class="block-label">03</div>
+        <h2 class="block-title">How We Built It</h2>
+        <div class="prose">
+          <p>
+            The platform was built in five phases over roughly four months, with each phase
+            delivering something usable before moving to the next. The goal was to have
+            working infrastructure in stakeholders' hands as early as possible — not to design
+            a perfect system in isolation.
+          </p>
+        </div>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="step-num">01</div>
+            <div class="step-body">
+              <div class="step-title">Data Audit &amp; Source Inventory</div>
+              <div class="step-desc">
+                Catalogued all active data sources: Salesforce, internal PostgreSQL databases,
+                marketing APIs, and event streams. Identified 15+ distinct sources feeding
+                into manual reports, documented their schemas, update frequencies, and
+                the business questions each was supposed to answer. Surfaced three sources
+                with known reliability issues that needed fixing before modeling.
+              </div>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">02</div>
+            <div class="step-body">
+              <div class="step-title">Staging Layer — Source-Faithful Models</div>
+              <div class="step-desc">
+                Built one dbt staging model per source table: rename columns to consistent
+                conventions, cast types, apply source filters. No business logic at this layer.
+                Added uniqueness and not-null tests on every primary key. This layer ran in
+                CI from day one — any source schema change would fail fast rather than silently
+                corrupt downstream models.
+              </div>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">03</div>
+            <div class="step-body">
+              <div class="step-title">Intermediate Layer — Event Pipeline &amp; Identity Resolution</div>
+              <div class="step-desc">
+                Built the event sessionization pipeline and anonymous-to-user ID mapping here.
+                This was the most complex phase — resolving pre-signup behavioral events to
+                authenticated users required careful business rule definition for edge cases
+                (multi-device users, session timeouts, account merges). The resulting models
+                gave the company its first complete customer behavioral timeline.
+              </div>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">04</div>
+            <div class="step-body">
+              <div class="step-title">Mart Layer — Business-Facing Dimensional Models</div>
+              <div class="step-desc">
+                Built Kimball-style fact and dimension tables organized around business
+                domains: customer acquisition, deal pipeline, marketing attribution, and
+                operational KPIs. Each mart model had a full test suite plus human-readable
+                descriptions in schema.yml, imported into Atlan so any stakeholder could
+                look up a metric definition without opening dbt.
+              </div>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">05</div>
+            <div class="step-body">
+              <div class="step-title">Governance, Monitoring &amp; Rollout</div>
+              <div class="step-desc">
+                Deployed the anomaly detection framework, established the data change process
+                (PR review + downstream notification for mart changes), and migrated all
+                existing Power BI reports onto the new mart layer. Ran old and new in parallel
+                for three weeks to validate consistency, then deprecated the manual Excel
+                processes as each team confirmed the new data matched expectations.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CODE SAMPLE -->
+      <div class="block">
+        <div class="block-label">04</div>
         <h2 class="block-title">Implementation Detail</h2>
         <div class="prose">
           <p>
@@ -496,7 +602,7 @@
 
       <!-- DATA QUALITY -->
       <div class="block">
-        <div class="block-label">04</div>
+        <div class="block-label">05</div>
         <h2 class="block-title">Data Quality &amp; Governance</h2>
         <div class="prose">
           <p>
@@ -528,7 +634,7 @@
 
       <!-- RESULTS -->
       <div class="block">
-        <div class="block-label">05</div>
+        <div class="block-label">06</div>
         <h2 class="block-title">Results</h2>
 
         <div class="metrics-row">
@@ -567,7 +673,7 @@
 
       <!-- LESSONS -->
       <div class="block">
-        <div class="block-label">06</div>
+        <div class="block-label">07</div>
         <h2 class="block-title">Lessons Learned</h2>
         <ul class="lesson-list">
           <li>

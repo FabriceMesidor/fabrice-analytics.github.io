@@ -409,7 +409,7 @@
       .hero-right { padding: 2.5rem 1.5rem; }
       .stat-grid { grid-template-columns: 1fr 1fr; }
       .section { padding: 4rem 1.5rem; }
-      .projects-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr !important; }
       .project-card { border-right: none; border-bottom: 1px solid var(--rule); }
       .project-card:last-child { border-bottom: none; }
       .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
@@ -479,7 +479,7 @@
         <span class="section-num">01 —</span>
         <h2 class="section-title">Case Studies</h2>
       </div>
-      <div class="projects-grid">
+      <div class="projects-grid" style="grid-template-columns: repeat(3, 1fr);">
 
         <a href="theguarantors.html" class="project-card">
           <p class="project-tag">Fintech · Housing Insurance · 2022–Present</p>
@@ -551,6 +551,43 @@
             <span class="tag">SQL</span>
             <span class="tag">Segment</span>
             <span class="tag">Google Data Studio</span>
+          </div>
+          <span class="project-arrow">Read case study →</span>
+        </a>
+
+        <a href="forecast.html" class="project-card">
+          <p class="project-tag">Fintech · Housing Insurance · Forecasting</p>
+          <h3 class="project-title">Annual Deal<br />Volume Forecast</h3>
+          <p class="project-desc">
+            Built a full-year SARIMA forecast of deals submitted at TheGuarantors —
+            selecting the winning model via walk-forward backtesting and adjusting
+            for housing market macro factors.
+          </p>
+          <div class="project-metrics">
+            <div class="metric-row">
+              <span class="metric-val">40% YoY</span>
+              <span class="metric-desc">Growth target set from model output</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-val">75%</span>
+              <span class="metric-desc">Directional accuracy in backtest</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-val">6 models</span>
+              <span class="metric-desc">ARIMA/SARIMA orders backtested</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-val">3 scenarios</span>
+              <span class="metric-desc">Base, upside, downside for planning</span>
+            </div>
+          </div>
+          <div class="project-stack">
+            <span class="tag">Python</span>
+            <span class="tag">SARIMA</span>
+            <span class="tag">statsmodels</span>
+            <span class="tag">SQL</span>
+            <span class="tag">dbt</span>
+            <span class="tag">Power BI</span>
           </div>
           <span class="project-arrow">Read case study →</span>
         </a>

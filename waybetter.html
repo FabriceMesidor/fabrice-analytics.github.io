@@ -117,6 +117,31 @@
     .prose p strong { color: var(--ink); }
     .prose p:last-child { margin-bottom: 0; }
 
+    /* ── PROCESS STEPS ── */
+    .process-steps {
+      display: flex; flex-direction: column; gap: 0;
+      border: 1px solid var(--rule); margin: 2rem 0;
+    }
+    .process-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      border-bottom: 1px solid var(--rule);
+    }
+    .process-step:last-child { border-bottom: none; }
+    .step-num {
+      background: var(--cream);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 0.72rem;
+      color: var(--accent2); border-right: 1px solid var(--rule);
+      padding: 1.25rem 0;
+    }
+    .step-body { padding: 1.25rem 1.5rem; }
+    .step-title {
+      font-size: 0.92rem; font-weight: 600;
+      color: var(--ink); margin-bottom: 0.35rem;
+    }
+    .step-desc { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.65; }
+
     .callout {
       padding: 1.5rem 1.75rem;
       border-left: 3px solid var(--accent);
@@ -397,9 +422,76 @@
         </table>
       </div>
 
-      <!-- APPROACH -->
+      <!-- PROCESS STEPS -->
       <div class="block">
         <div class="block-label">03</div>
+        <h2 class="block-title">How We Built It</h2>
+        <div class="prose">
+          <p>
+            The project ran in four phases over roughly five months. The core principle was
+            to deliver value incrementally — starting with the highest-traffic reports and
+            the most broken data pipelines, not trying to migrate everything at once.
+          </p>
+        </div>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="step-num">01</div>
+            <div class="step-body">
+              <div class="step-title">Source Audit &amp; dbt Project Foundation</div>
+              <div class="step-desc">
+                Inventoried all Segment event types, PostgreSQL source tables, and existing
+                Google Data Studio reports. Ranked reports by usage frequency and business
+                criticality. Set up the dbt project structure — staging, intermediate, and
+                mart layers — with CI running tests on every pull request from day one.
+                Fixed three broken source pipelines before building any models on top of them.
+              </div>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">02</div>
+            <div class="step-body">
+              <div class="step-title">Event Sessionization &amp; Identity Resolution</div>
+              <div class="step-desc">
+                Built the intermediate layer's most complex piece: joining anonymous Segment
+                events to authenticated user records. This required resolving the identity graph —
+                finding the anonymous IDs that preceded each user's first login and backfilling
+                pre-signup behavioral events to the correct user. The result was a complete
+                behavioral timeline per user, which became the foundation for all retention analysis.
+              </div>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">03</div>
+            <div class="step-body">
+              <div class="step-title">Mart Layer &amp; dbt Model Build-Out</div>
+              <div class="step-desc">
+                Built production dbt models covering user acquisition, engagement, challenge
+                completion, and customer lifecycle. Each mart model had 300+ cumulative tests
+                across the project — uniqueness, not-null, referential integrity, and custom
+                business-logic validations. Implemented incremental models for high-volume
+                event tables to keep pipeline runs under 15 minutes.
+              </div>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">04</div>
+            <div class="step-body">
+              <div class="step-title">Looker Migration, Training &amp; Deprecation</div>
+              <div class="step-desc">
+                Rebuilt all 20+ reports in Looker on top of the new dbt models, running both
+                versions in parallel for two weeks to validate number consistency. Ran
+                45-minute training sessions with every stakeholder team — not screen-share
+                demos, but hands-on sessions where users built their own Explores. Formally
+                deprecated the Google Data Studio reports once each team signed off.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPROACH -->
+      <div class="block">
+        <div class="block-label">04</div>
         <h2 class="block-title">The Migration Approach</h2>
         <div class="prose">
           <p>
@@ -508,7 +600,7 @@
 
       <!-- CHURN ANALYSIS -->
       <div class="block">
-        <div class="block-label">04</div>
+        <div class="block-label">05</div>
         <h2 class="block-title">Churn Driver Analysis</h2>
         <div class="prose">
           <p>
@@ -538,7 +630,7 @@
 
       <!-- LOOKER MIGRATION -->
       <div class="block">
-        <div class="block-label">05</div>
+        <div class="block-label">06</div>
         <h2 class="block-title">The Looker Migration</h2>
         <div class="prose">
           <p>
@@ -566,7 +658,7 @@
 
       <!-- RESULTS -->
       <div class="block">
-        <div class="block-label">06</div>
+        <div class="block-label">07</div>
         <h2 class="block-title">Results</h2>
         <div class="metrics-row">
           <div class="metric-card">
@@ -604,7 +696,7 @@
 
       <!-- LESSONS -->
       <div class="block">
-        <div class="block-label">07</div>
+        <div class="block-label">08</div>
         <h2 class="block-title">Lessons Learned</h2>
         <ul class="lesson-list">
           <li>

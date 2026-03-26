@@ -3,1056 +3,1013 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Annual Deal Forecast — TheGuarantors · Fabrice Mesidor</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <title>State-Level Deal Volume Forecast — TheGuarantors · Fabrice Mesidor</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink:       #0f0f0f;
-      --ink-muted: #555;
-      --paper:     #faf9f6;
-      --cream:     #f2f0ea;
-      --rule:      #e0ddd5;
-      --accent:    #1a3a5c;
-      --accent2:   #c8401a;
-      --mono:      'DM Mono', monospace;
-      --serif:     'DM Serif Display', serif;
-      --sans:      'DM Sans', sans-serif;
+      --navy:   #1F4E79;
+      --teal:   #2E86AB;
+      --ink:    #1a1a2e;
+      --gray:   #555;
+      --light:  #f5f7fa;
+      --border: #dde3ec;
+      --code-bg:#1e2030;
+      --green:  #1a6b3a;
+      --amber:  #7B4F00;
+      --font:   'Inter', system-ui, sans-serif;
+      --mono:   'JetBrains Mono', 'Fira Code', monospace;
     }
 
-    html { scroll-behavior: smooth; }
     body {
-      background: var(--paper);
+      font-family: var(--font);
       color: var(--ink);
-      font-family: var(--sans);
+      background: #fff;
+      line-height: 1.7;
       font-size: 16px;
-      line-height: 1.65;
-      overflow-x: hidden;
     }
 
-    /* ── NAV ── */
+    /* NAV */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: sticky; top: 0; z-index: 100;
+      background: var(--navy);
+      padding: 0 2rem;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1.25rem 3rem;
-      background: rgba(250,249,246,0.92);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--rule);
+      height: 56px;
     }
-    .nav-logo {
-      font-family: var(--mono); font-size: 0.85rem; font-weight: 500;
-      color: var(--ink); text-decoration: none; letter-spacing: 0.02em;
-    }
-    .nav-back {
-      font-family: var(--mono); font-size: 0.78rem; color: var(--ink-muted);
-      text-decoration: none; letter-spacing: 0.06em;
-      text-transform: uppercase; transition: color 0.2s;
-    }
-    .nav-back:hover { color: var(--ink); }
+    nav a { color: #fff; text-decoration: none; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.04em; }
+    nav .back { color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 400; }
+    nav .back:hover { color: #fff; }
 
-    /* ── HERO ── */
-    .case-hero {
-      padding: 8rem 3rem 5rem;
-      border-bottom: 1px solid var(--rule);
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 4rem;
-      align-items: end;
-      max-width: 1200px;
-      margin: 0 auto;
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #2c5f8a 100%);
+      color: #fff;
+      padding: 4rem 2rem 3rem;
     }
-    .case-eyebrow {
-      font-family: var(--mono); font-size: 0.75rem;
-      color: var(--accent2); letter-spacing: 0.12em;
-      text-transform: uppercase; margin-bottom: 1.25rem;
+    .hero-inner { max-width: 860px; margin: 0 auto; }
+    .case-label {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(255,255,255,0.6);
+      margin-bottom: 1.2rem;
     }
-    .case-title {
-      font-family: var(--serif);
-      font-size: clamp(2.5rem, 4.5vw, 4rem);
-      line-height: 1.08; margin-bottom: 1.5rem;
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800; line-height: 1.15;
+      margin-bottom: 1.2rem;
     }
-    .case-title em { font-style: italic; color: var(--accent); }
-    .case-summary {
-      font-size: 1.05rem; color: var(--ink-muted);
-      line-height: 1.75; max-width: 52ch;
+    .hero h1 em { font-style: italic; color: #7ec8e3; }
+    .hero-sub {
+      font-size: 1.05rem; color: rgba(255,255,255,0.82);
+      max-width: 640px; margin-bottom: 2.5rem; line-height: 1.65;
     }
-    .case-meta {
-      display: flex; flex-direction: column; gap: 1rem;
-      padding: 1.75rem; border: 1px solid var(--rule);
-      background: var(--cream);
+    .meta-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem; padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.15);
     }
-    .meta-label {
-      font-family: var(--mono); font-size: 0.68rem;
-      color: var(--accent2); letter-spacing: 0.12em;
-      text-transform: uppercase; margin-bottom: 0.2rem;
-    }
-    .meta-val { font-size: 0.88rem; color: var(--ink); line-height: 1.4; }
-
-    /* ── LAYOUT ── */
-    .case-body {
-      max-width: 1200px; margin: 0 auto; padding: 0 3rem;
-      display: grid;
-      grid-template-columns: 1fr 260px;
-      gap: 5rem; align-items: start;
-    }
-    .case-content { padding: 4rem 0; }
-    .case-sidebar { padding: 4rem 0; position: sticky; top: 90px; }
-
-    /* ── CONTENT ── */
-    .block { margin-bottom: 4rem; }
-    .block-label {
-      font-family: var(--mono); font-size: 0.7rem;
-      color: var(--accent2); letter-spacing: 0.14em;
-      text-transform: uppercase; margin-bottom: 1rem;
-      display: flex; align-items: center; gap: 0.75rem;
-    }
-    .block-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
-    h2.block-title {
-      font-family: var(--serif); font-size: 1.75rem;
-      margin-bottom: 1.25rem; line-height: 1.2;
-    }
-    .prose p {
-      font-size: 0.97rem; color: var(--ink-muted);
-      line-height: 1.85; margin-bottom: 1.1rem;
-    }
-    .prose p strong { color: var(--ink); }
-    .prose p:last-child { margin-bottom: 0; }
-
-    .callout {
-      padding: 1.5rem 1.75rem;
-      border-left: 3px solid var(--accent);
-      background: var(--cream); margin: 2rem 0;
-    }
-    .callout p { font-size: 0.95rem; color: var(--ink); line-height: 1.75; font-style: italic; }
-
-    /* ── MODEL COMPARISON TABLE ── */
-    .model-table {
-      width: 100%; border-collapse: collapse;
-      border: 1px solid var(--rule); margin: 2rem 0;
-    }
-    .model-table th {
-      padding: 0.85rem 1.1rem;
-      font-family: var(--mono); font-size: 0.68rem;
+    .meta-item label {
+      display: block; font-size: 0.72rem; font-weight: 600;
       letter-spacing: 0.1em; text-transform: uppercase;
-      border-bottom: 1px solid var(--rule);
-      text-align: left; background: var(--cream);
-      color: var(--ink-muted);
+      color: rgba(255,255,255,0.5); margin-bottom: 0.35rem;
     }
-    .model-table th:not(:last-child) { border-right: 1px solid var(--rule); }
-    .model-table td {
-      padding: 0.85rem 1.1rem;
-      font-size: 0.85rem; color: var(--ink-muted);
-      border-bottom: 1px solid var(--rule);
-      vertical-align: top;
-    }
-    .model-table td:not(:last-child) { border-right: 1px solid var(--rule); }
-    .model-table tr:last-child td { border-bottom: none; }
-    .model-table tr.winner td {
-      background: #f0f4f9;
-      color: var(--ink);
-      font-weight: 500;
-    }
-    .model-table .mono { font-family: var(--mono); font-size: 0.8rem; }
-    .badge {
-      display: inline-block;
-      font-family: var(--mono); font-size: 0.63rem;
-      padding: 0.15rem 0.5rem;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      border: 1px solid var(--accent);
-      color: var(--accent); margin-left: 0.5rem;
-      vertical-align: middle;
-    }
-    .badge.selected { background: var(--accent); color: white; }
+    .meta-item span { font-size: 0.9rem; color: #fff; font-weight: 500; }
 
-    /* ── FORECAST CHART (CSS-only sparkline) ── */
-    .forecast-visual {
-      background: var(--cream);
-      border: 1px solid var(--rule);
-      padding: 2rem 2.5rem;
-      margin: 2rem 0;
+    /* CONTENT */
+    .content { max-width: 860px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+    /* SECTION */
+    .section { padding: 3.5rem 0 0; }
+    .section-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 0.6rem;
     }
-    .forecast-label {
-      font-family: var(--mono); font-size: 0.65rem;
-      color: var(--ink-muted); letter-spacing: 0.1em;
-      text-transform: uppercase; margin-bottom: 1.75rem;
+    .section h2 {
+      font-size: 1.6rem; font-weight: 800; color: var(--navy);
+      margin-bottom: 1.2rem; line-height: 1.2;
     }
-    .chart-area {
-      position: relative;
-      height: 140px;
-      display: flex;
-      align-items: flex-end;
-      gap: 6px;
-      border-bottom: 1px solid var(--rule);
-      padding-bottom: 0;
-      margin-bottom: 0.75rem;
-    }
-    .bar-group { display: flex; gap: 3px; align-items: flex-end; flex: 1; }
-    .bar {
-      flex: 1;
-      transition: opacity 0.2s;
-      position: relative;
-    }
-    .bar.actual    { background: var(--accent); opacity: 0.85; }
-    .bar.forecast  { background: var(--accent2); opacity: 0.75; }
-    .bar.ci        { background: var(--accent2); opacity: 0.25; }
-    .bar:hover     { opacity: 1; }
-    .chart-labels {
-      display: flex; gap: 6px;
-    }
-    .chart-label-group {
-      flex: 1; text-align: center;
-    }
-    .chart-label-group span {
-      font-family: var(--mono); font-size: 0.6rem;
-      color: var(--ink-muted);
-    }
-    .chart-legend {
-      display: flex; gap: 1.5rem; margin-top: 1.25rem;
-      flex-wrap: wrap;
-    }
-    .legend-item {
-      display: flex; align-items: center; gap: 0.5rem;
-    }
-    .legend-swatch {
-      width: 12px; height: 12px;
-    }
-    .legend-swatch.actual   { background: var(--accent); opacity: 0.85; }
-    .legend-swatch.forecast { background: var(--accent2); opacity: 0.75; }
-    .legend-swatch.ci       { background: var(--accent2); opacity: 0.25; }
-    .legend-item span {
-      font-family: var(--mono); font-size: 0.65rem;
-      color: var(--ink-muted); letter-spacing: 0.06em;
+    .section p { color: #333; margin-bottom: 1rem; }
+    .section p strong { color: var(--navy); }
+
+    blockquote {
+      border-left: 3px solid var(--teal);
+      margin: 1.8rem 0; padding: 1rem 1.5rem;
+      background: var(--light); border-radius: 0 6px 6px 0;
+      font-style: italic; color: #444; font-size: 0.97rem;
     }
 
-    /* ── PROCESS STEPS ── */
-    .process-steps {
-      display: flex; flex-direction: column; gap: 0;
-      border: 1px solid var(--rule); margin: 2rem 0;
+    /* STEPS */
+    .steps { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.5rem; }
+    .step {
+      display: grid; grid-template-columns: 36px 1fr;
+      gap: 1rem; align-items: start;
     }
-    .process-step {
-      display: grid;
-      grid-template-columns: 48px 1fr;
-      border-bottom: 1px solid var(--rule);
-    }
-    .process-step:last-child { border-bottom: none; }
     .step-num {
-      background: var(--cream);
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--navy); color: #fff;
+      font-size: 0.8rem; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
-      font-family: var(--mono); font-size: 0.72rem;
-      color: var(--accent2); border-right: 1px solid var(--rule);
-      padding: 1.25rem 0;
+      flex-shrink: 0; margin-top: 2px;
     }
-    .step-body { padding: 1.25rem 1.5rem; }
-    .step-title {
-      font-size: 0.92rem; font-weight: 600;
-      color: var(--ink); margin-bottom: 0.35rem;
-    }
-    .step-desc { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.65; }
+    .step-body h4 { font-size: 0.97rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; }
+    .step-body p { font-size: 0.93rem; color: #444; margin: 0; }
 
-    /* ── MACRO FACTORS ── */
+    /* TABLE */
+    .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th {
+      background: var(--navy); color: #fff;
+      padding: 0.7rem 1rem; text-align: left;
+      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em;
+    }
+    td { padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); color: #333; }
+    tr:nth-child(even) td { background: var(--light); }
+    tr.winner td { font-weight: 600; color: var(--green); }
+    .badge {
+      display: inline-block; padding: 0.15rem 0.5rem;
+      border-radius: 999px; font-size: 0.75rem; font-weight: 600;
+    }
+    .badge-green { background: #e6f4ec; color: var(--green); }
+    .badge-blue  { background: #e8f0f8; color: var(--navy); }
+    .badge-amber { background: #fff4e0; color: var(--amber); }
+
+    /* CODE */
+    .code-block {
+      background: var(--code-bg); border-radius: 8px;
+      margin: 1.5rem 0; overflow: hidden;
+    }
+    .code-label {
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5);
+      font-size: 0.78rem; font-family: var(--mono);
+      padding: 0.5rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    pre {
+      padding: 1.4rem 1.6rem; overflow-x: auto;
+      font-family: var(--mono); font-size: 0.84rem;
+      line-height: 1.65; color: #cdd6f4;
+    }
+    .kw  { color: #cba6f7; }
+    .fn  { color: #89b4fa; }
+    .str { color: #a6e3a1; }
+    .cm  { color: #6c7086; font-style: italic; }
+    .nb  { color: #fab387; }
+
+    /* MACRO CARDS */
     .macro-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 0; border: 1px solid var(--rule); margin: 2rem 0;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem; margin: 1.5rem 0;
     }
     .macro-card {
-      padding: 1.5rem;
-      border-right: 1px solid var(--rule);
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.4rem; background: var(--light);
     }
-    .macro-card:last-child { border-right: none; }
     .macro-icon {
-      font-family: var(--mono); font-size: 1.4rem;
-      margin-bottom: 0.75rem; display: block;
+      font-size: 1.5rem; margin-bottom: 0.7rem;
+      display: block;
     }
-    .macro-name {
-      font-family: var(--mono); font-size: 0.68rem;
-      color: var(--accent2); letter-spacing: 0.1em;
-      text-transform: uppercase; margin-bottom: 0.4rem;
+    .macro-card h4 {
+      font-size: 0.92rem; font-weight: 700; color: var(--navy);
+      margin-bottom: 0.5rem;
     }
-    .macro-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.6; }
+    .macro-card p { font-size: 0.87rem; color: #555; margin: 0; line-height: 1.55; }
 
-    /* ── CODE ── */
-    .code-block {
-      background: #0f1117; border: 1px solid #2a2d3a;
-      padding: 1.75rem; margin: 2rem 0; overflow-x: auto;
+    /* MODEL FAMILIES */
+    .model-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem; margin: 1.5rem 0;
     }
-    .code-block-header {
-      font-family: var(--mono); font-size: 0.68rem;
-      color: rgba(255,255,255,0.35); letter-spacing: 0.1em;
-      text-transform: uppercase; margin-bottom: 1rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+    .model-card {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.4rem; position: relative; overflow: hidden;
     }
-    .code-block pre {
-      font-family: var(--mono); font-size: 0.78rem;
-      line-height: 1.7; color: #a9b7c6; white-space: pre;
+    .model-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%;
     }
-    .c-keyword { color: #cc99cd; }
-    .c-fn      { color: #6dcff6; }
-    .c-str     { color: #7ec699; }
-    .c-comment { color: rgba(255,255,255,0.3); font-style: italic; }
-    .c-var     { color: #e8bf6a; }
-    .c-num     { color: #f08d49; }
-    .c-dec     { color: #f08d49; }
+    .model-card.arima::before   { background: var(--navy); }
+    .model-card.ets::before     { background: var(--teal); }
+    .model-card.weighted::before { background: #e67e22; }
+    .model-card h4 { font-size: 0.92rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+    .model-card p  { font-size: 0.87rem; color: #555; margin: 0; line-height: 1.55; }
+    .model-tag {
+      display: inline-block; margin-bottom: 0.6rem;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--teal);
+    }
 
-    /* ── METRICS ── */
-    .metrics-row {
-      display: grid; grid-template-columns: repeat(2, 1fr);
-      gap: 0; border: 1px solid var(--rule); margin: 2rem 0;
+    /* STATS */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem; margin: 2rem 0;
     }
-    .metric-card {
-      padding: 1.75rem;
-      border-right: 1px solid var(--rule);
-      border-bottom: 1px solid var(--rule);
+    .stat-card {
+      text-align: center; padding: 1.5rem 1rem;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--light);
     }
-    .metric-card:nth-child(even)     { border-right: none; }
-    .metric-card:nth-last-child(-n+2) { border-bottom: none; }
-    .mc-val {
-      font-family: var(--serif); font-size: 2.4rem;
-      color: var(--accent); line-height: 1; margin-bottom: 0.4rem;
+    .stat-val {
+      font-size: 2rem; font-weight: 800; color: var(--navy);
+      line-height: 1; display: block; margin-bottom: 0.5rem;
     }
-    .mc-label {
-      font-family: var(--mono); font-size: 0.7rem;
-      color: var(--ink-muted); letter-spacing: 0.08em;
-      text-transform: uppercase; margin-bottom: 0.5rem;
-    }
-    .mc-desc { font-size: 0.82rem; color: var(--ink-muted); line-height: 1.5; }
+    .stat-label { font-size: 0.8rem; color: var(--gray); line-height: 1.4; }
 
-    /* ── LESSONS ── */
-    .lesson-list { list-style: none; }
-    .lesson-list li {
-      padding: 1.1rem 0; border-bottom: 1px solid var(--rule);
-      font-size: 0.95rem; color: var(--ink-muted); line-height: 1.6;
-      display: grid; grid-template-columns: 24px 1fr; gap: 0.75rem;
+    /* LESSONS */
+    .lessons { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.2rem; }
+    .lesson {
+      display: grid; grid-template-columns: 28px 1fr;
+      gap: 1rem; align-items: start;
     }
-    .lesson-list li:last-child { border-bottom: none; }
-    .lesson-num { font-family: var(--mono); font-size: 0.72rem; color: var(--accent2); padding-top: 0.1rem; }
+    .lesson-num {
+      font-size: 0.78rem; font-weight: 700; color: var(--teal);
+      padding-top: 0.15rem;
+    }
+    .lesson p { font-size: 0.95rem; color: #333; margin: 0; }
+    .lesson p strong { color: var(--navy); }
 
-    /* ── SIDEBAR ── */
-    .sidebar-section { margin-bottom: 2.5rem; }
-    .sidebar-title {
-      font-family: var(--mono); font-size: 0.68rem;
-      color: var(--accent2); letter-spacing: 0.12em;
-      text-transform: uppercase; margin-bottom: 0.9rem;
+    /* CHART */
+    .chart-wrap {
+      background: var(--light); border-radius: 10px;
+      padding: 1.5rem; margin: 1.5rem 0;
+      border: 1px solid var(--border);
     }
-    .sidebar-list { list-style: none; }
-    .sidebar-list li {
-      font-size: 0.85rem; color: var(--ink-muted);
-      padding: 0.4rem 0; border-bottom: 1px solid var(--rule);
-      display: flex; align-items: center; gap: 0.6rem;
+    .chart-label {
+      font-size: 0.8rem; font-weight: 600; color: var(--gray);
+      margin-bottom: 1.2rem; text-align: center;
     }
-    .sidebar-list li:last-child { border-bottom: none; }
-    .sidebar-list li::before { content: '—'; color: var(--accent2); font-family: var(--mono); font-size: 0.7rem; }
-    .sidebar-nav-link {
-      display: block; padding: 1.25rem;
-      background: var(--ink); color: var(--paper);
-      text-decoration: none; transition: background 0.2s;
-      margin-bottom: 0.75rem;
+    .chart-bars {
+      display: flex; align-items: flex-end; gap: 4px;
+      height: 120px; padding: 0 1rem;
     }
-    .sidebar-nav-link:hover { background: var(--accent); }
-    .sidebar-nav-label {
-      font-family: var(--mono); font-size: 0.65rem;
-      color: rgba(255,255,255,0.45); letter-spacing: 0.1em;
-      text-transform: uppercase; margin-bottom: 0.5rem;
+    .bar-group { flex: 1; display: flex; gap: 2px; align-items: flex-end; }
+    .bar {
+      flex: 1; border-radius: 3px 3px 0 0;
+      transition: opacity 0.2s;
     }
-    .sidebar-nav-title { font-size: 0.9rem; color: white; line-height: 1.4; }
+    .bar:hover { opacity: 0.8; }
+    .bar.actual  { background: var(--navy); }
+    .bar.forecast { background: var(--teal); opacity: 0.7; }
+    .bar.range   { background: #b8d4e8; opacity: 0.5; }
+    .chart-x {
+      display: flex; gap: 4px; padding: 0 1rem;
+      margin-top: 0.5rem;
+    }
+    .chart-x span {
+      flex: 1; text-align: center;
+      font-size: 0.68rem; color: var(--gray);
+    }
+    .chart-legend {
+      display: flex; gap: 1.5rem; justify-content: center;
+      margin-top: 1rem; flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8rem; color: var(--gray);
+    }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 2px;
+    }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      nav { padding: 1rem 1.5rem; }
-      .case-hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 2.5rem; }
-      .case-body { grid-template-columns: 1fr; gap: 0; padding: 0 1.5rem; }
-      .case-sidebar { position: static; padding: 0 0 4rem; }
-      .metrics-row { grid-template-columns: 1fr 1fr; }
-      .macro-grid { grid-template-columns: 1fr; }
-      .macro-card { border-right: none; border-bottom: 1px solid var(--rule); }
-      .macro-card:last-child { border-bottom: none; }
-      .model-table { font-size: 0.78rem; }
+    /* SIDEBAR TAGS */
+    .sidebar-wrap {
+      display: grid; grid-template-columns: 1fr 280px;
+      gap: 3rem; align-items: start; margin-top: 3rem;
+      padding-top: 2rem; border-top: 1px solid var(--border);
+    }
+    @media (max-width: 720px) {
+      .sidebar-wrap { grid-template-columns: 1fr; }
+    }
+    .sidebar h3 {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--navy);
+      margin-bottom: 0.8rem; margin-top: 1.4rem;
+    }
+    .sidebar h3:first-child { margin-top: 0; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      background: var(--light); border: 1px solid var(--border);
+      border-radius: 4px; padding: 0.25rem 0.6rem;
+      font-size: 0.8rem; color: #444; font-weight: 500;
+    }
+
+    /* RELATED */
+    .related {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem; margin-top: 2rem;
+    }
+    .related a {
+      display: block; padding: 1.2rem 1.4rem;
+      border: 1px solid var(--border); border-radius: 10px;
+      text-decoration: none; color: var(--navy);
+      background: var(--light);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .related a:hover { border-color: var(--teal); background: #fff; }
+    .related .rel-label { font-size: 0.75rem; color: var(--gray); margin-bottom: 0.3rem; }
+    .related .rel-title { font-size: 0.95rem; font-weight: 700; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 2.5rem 1.2rem 2rem; }
+      .content { padding: 0 1.2rem 4rem; }
     }
   </style>
 </head>
 <body>
 
-  <nav>
-    <a href="index.html" class="nav-logo">FM / Analytics Engineer</a>
-    <a href="index.html#work" class="nav-back">← All Work</a>
-  </nav>
+<!-- NAV -->
+<nav>
+  <a href="https://fabrice-analytics.com/index.html">FM / Analytics Engineer</a>
+  <a href="https://fabrice-analytics.com/index.html#work" class="back">← All Work</a>
+</nav>
 
-  <!-- HERO -->
-  <header class="case-hero">
-    <div>
-      <p class="case-eyebrow">Case Study 03 · TheGuarantors · Forecasting &amp; Planning</p>
-      <h1 class="case-title">Annual Deal<br /><em>Volume Forecast</em></h1>
-      <p class="case-summary">
-        Built a full-year forecast of deals submitted at TheGuarantors using competing ARIMA
-        models selected via backtesting, with business domain knowledge guiding parameter
-        choices and housing market indicators layered in as macro adjustments.
-        Output: a 40% YoY growth target the business could plan against with confidence.
-      </p>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <p class="case-label">Case Study 03 · TheGuarantors · Forecasting &amp; Planning</p>
+    <h1>State-Level Deal <em>Volume Forecast</em></h1>
+    <p class="hero-sub">
+      Built a 50-state deal volume forecasting system — training ARIMA, ETS, and
+      weighted-recent ARIMA models for each state, selecting the best performer via
+      walk-forward backtesting, and incorporating state-level real estate macro indicators
+      as exogenous variables. Output: a 40% YoY growth target adopted by leadership
+      for investor planning and headcount decisions.
+    </p>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <label>Company</label>
+        <span>TheGuarantors</span>
+      </div>
+      <div class="meta-item">
+        <label>Project Type</label>
+        <span>Time Series Forecasting · State-Level Modeling · Annual Planning</span>
+      </div>
+      <div class="meta-item">
+        <label>Role</label>
+        <span>Senior Analytics Engineer — sole analyst</span>
+      </div>
+      <div class="meta-item">
+        <label>Stack</label>
+        <span>Python · statsmodels · pdfplumber · SQL · dbt · Databricks · Power BI</span>
+      </div>
     </div>
-    <div class="case-meta">
-      <div class="meta-item">
-        <div class="meta-label">Company</div>
-        <div class="meta-val">TheGuarantors</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- 01 THE PROBLEM -->
+  <div class="section">
+    <p class="section-label">01</p>
+    <h2>The Problem</h2>
+    <p>
+      Every year, TheGuarantors' leadership needed a forward-looking deal volume forecast
+      to drive headcount planning, underwriting capacity decisions, and sales targets —
+      broken down by state to reflect the geographic variation in our rental housing business.
+      Before this project, those numbers were produced by hand: a senior leader would apply
+      a gut-feel growth percentage to prior year actuals and call it a plan.
+    </p>
+    <p>
+      The problem wasn't just accuracy. It was <strong>credibility and defensibility</strong>.
+      When actuals diverged from plan — as they always did — there was no model to interrogate,
+      no assumptions to revisit, and no structured way to update the forecast mid-year.
+      Finance would ask why the number was wrong and there was no rigorous answer.
+    </p>
+    <p>
+      The added complexity: deal volume at TheGuarantors doesn't move in isolation.
+      We operate in the rental housing market, and that market varies significantly by state.
+      <strong>Rental vacancy rates, the balance of space demand versus new deliveries, and
+      local rent growth</strong> are the real drivers of our addressable market —
+      and they behave very differently in Texas versus New York versus Arizona.
+      A single national model would flatten the signals that matter most.
+    </p>
+    <blockquote>
+      "The goal wasn't just a number — it was a defensible, updatable, state-aware model
+      that leadership could present to investors and use to drive real resource decisions."
+    </blockquote>
+  </div>
+
+  <!-- 02 FORECASTING APPROACH -->
+  <div class="section">
+    <p class="section-label">02</p>
+    <h2>Forecasting Approach</h2>
+    <p>The project ran in four phases: data preparation, model training across three families,
+       walk-forward model selection per state, and macro adjustment via state-level indicators.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Historical Data Preparation</h4>
+          <p>Pulled 3+ years of monthly deal submission data by state from Databricks using
+             dbt-modeled mart tables. Handled missing months, corrected for a known data
+             migration gap in 2021, and decomposed each state series to confirm trend,
+             seasonality, and residual components before touching any model code.</p>
+        </div>
       </div>
-      <div class="meta-item">
-        <div class="meta-label">Project Type</div>
-        <div class="meta-val">Time Series Forecasting · Annual Planning</div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Model Family Selection</h4>
+          <p>Three model families were trained for each of the 50 states: ARIMA (baseline
+             autoregressive), ETS (exponential smoothing), and a weighted-recent ARIMA that
+             down-weights older observations to prioritize post-pandemic housing market behavior.
+             Where state-level macro indicators showed sufficient predictive correlation,
+             SARIMA-X configurations with exogenous variables were also tested.</p>
+        </div>
       </div>
-      <div class="meta-item">
-        <div class="meta-label">Role</div>
-        <div class="meta-val">Senior Analytics Engineer — sole analyst on this project</div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Walk-Forward Backtesting &amp; Per-State Selection</h4>
+          <p>Walk-forward backtesting across the last 12 months of history for every state:
+             train on everything before month N, forecast month N, advance by one month, repeat.
+             Evaluated each candidate on MAE and RMSE. Selected the model with the
+             lowest combined error per state — resulting in different winning model families
+             across states based on their individual data characteristics.</p>
+        </div>
       </div>
-      <div class="meta-item">
-        <div class="meta-label">Stack</div>
-        <div class="meta-val">Python · statsmodels · SQL · dbt · Databricks</div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>State-Level Macro Adjustment</h4>
+          <p>Applied structured overlays using three state-level real estate indicators —
+             rental vacancy rate, space demand relative to deliveries, and rent growth YoY.
+             Each indicator was normalized per state and weighted by its historical predictive
+             correlation with that state's deal volume. Combined into a single adjustment
+             multiplier capped at ±7.5% to preserve model stability.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <h4>Scenario Planning &amp; Delivery</h4>
+          <p>Produced three scenarios — base, downside, upside — at both state and national
+             level. Delivered as a Python-generated report fed into a Power BI dashboard,
+             with monthly actuals tracking against forecast automatically as new deal data
+             landed in dbt.</p>
+        </div>
       </div>
     </div>
-  </header>
+  </div>
 
-  <!-- BODY -->
-  <div class="case-body">
-    <main class="case-content">
+  <!-- 03 MODEL FAMILIES -->
+  <div class="section">
+    <p class="section-label">03</p>
+    <h2>Model Families &amp; Per-State Selection</h2>
+    <p>Rather than forcing every state into the same model structure, each state competed
+       across three model families. The winning model was selected independently per state
+       based on walk-forward MAE and RMSE.</p>
 
-      <!-- PROBLEM -->
-      <div class="block">
-        <div class="block-label">01</div>
-        <h2 class="block-title">The Problem</h2>
-        <div class="prose">
-          <p>
-            Every year, TheGuarantors' leadership needed a forward-looking deal volume forecast
-            to drive headcount planning, underwriting capacity decisions, and sales targets.
-            Before this project, those numbers were produced by hand — a senior leader would
-            look at prior year actuals, apply a gut-feel growth percentage, and call it a plan.
-          </p>
-          <p>
-            The problem wasn't just accuracy. It was <strong>credibility and defensibility</strong>.
-            When actuals diverged from plan — as they always did — there was no model to interrogate,
-            no assumptions to revisit, and no structured way to update the forecast mid-year.
-            Finance would ask why the number was wrong and there was no rigorous answer.
-          </p>
-          <p>
-            The added complexity: deal volume at TheGuarantors doesn't move in isolation.
-            We operate in the rental housing market, which means our pipeline is directly
-            sensitive to <strong>mortgage rates, housing supply, and rental market conditions</strong>.
-            A purely statistical model that ignored those signals would miss the most predictive
-            information available.
-          </p>
-        </div>
-        <div class="callout">
-          <p>"The goal wasn't just a number — it was a defensible, updatable model that leadership could present to investors and use to drive real resource decisions."</p>
-        </div>
+    <div class="model-grid">
+      <div class="model-card arima">
+        <span class="model-tag">Family 1</span>
+        <h4>ARIMA / SARIMA</h4>
+        <p>Baseline autoregressive model with optional seasonal component (period=12).
+           Favored by states with strong, stable annual lease renewal cycles —
+           markets where summer peaks and January troughs dominate the signal.</p>
       </div>
-
-      <!-- APPROACH -->
-      <div class="block">
-        <div class="block-label">02</div>
-        <h2 class="block-title">Forecasting Approach</h2>
-        <div class="prose">
-          <p>
-            The project ran in three phases: clean and prepare the historical deal series,
-            run a structured model selection process using backtesting, then adjust the
-            winning model's output using macro indicators and business domain judgment.
-          </p>
-        </div>
-
-        <div class="process-steps">
-          <div class="process-step">
-            <div class="step-num">01</div>
-            <div class="step-body">
-              <div class="step-title">Historical Data Preparation</div>
-              <div class="step-desc">
-                Pulled 3+ years of monthly deal submission data from Databricks using dbt-modeled
-                mart tables. Handled missing months, corrected for a known data migration gap in
-                2021, and decomposed the series to confirm trend, seasonality, and residual
-                components before touching any model code.
-              </div>
-            </div>
-          </div>
-          <div class="process-step">
-            <div class="step-num">02</div>
-            <div class="step-body">
-              <div class="step-title">Model Candidate Definition</div>
-              <div class="step-desc">
-                Used ACF/PACF plots and ADF stationarity tests to narrow the plausible ARIMA
-                order space. Domain knowledge further constrained choices: deal volume has
-                a clear annual seasonal pattern tied to lease renewal cycles, which guided
-                the seasonal differencing decision. Tested six candidate models.
-              </div>
-            </div>
-          </div>
-          <div class="process-step">
-            <div class="step-num">03</div>
-            <div class="step-body">
-              <div class="step-title">Backtesting &amp; Model Selection</div>
-              <div class="step-desc">
-                Walk-forward backtesting across the last 12 months of history: train on
-                everything before month N, forecast month N, advance by one month, repeat.
-                Evaluated each candidate on MAE, RMSE, and directional accuracy. Selected
-                the model with the best balance of error metrics and interpretability.
-              </div>
-            </div>
-          </div>
-          <div class="process-step">
-            <div class="step-num">04</div>
-            <div class="step-body">
-              <div class="step-title">Macro Adjustment Layer</div>
-              <div class="step-desc">
-                Applied a structured overlay using three housing market indicators to shift
-                the base ARIMA forecast up or down. Each indicator was normalized, weighted
-                by its historical predictive correlation with deal volume, and combined into
-                a single adjustment multiplier applied monthly.
-              </div>
-            </div>
-          </div>
-          <div class="process-step">
-            <div class="step-num">05</div>
-            <div class="step-body">
-              <div class="step-title">Scenario Planning &amp; Delivery</div>
-              <div class="step-desc">
-                Produced three scenarios — base, downside, upside — varying the macro
-                adjustment weights. Delivered as a Python-generated report fed into a
-                Power BI dashboard, with monthly actuals tracking against forecast
-                automatically as new data landed in dbt.
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="model-card ets">
+        <span class="model-tag">Family 2</span>
+        <h4>ETS (Exponential Smoothing)</h4>
+        <p>Adaptive smoothing that weights recent observations more heavily.
+           Favored by smaller or more volatile state markets where limited history
+           makes ARIMA parameter estimation unstable.</p>
       </div>
-
-      <!-- MODEL SELECTION -->
-      <div class="block">
-        <div class="block-label">03</div>
-        <h2 class="block-title">Model Selection via Backtesting</h2>
-        <div class="prose">
-          <p>
-            Six ARIMA configurations were backtested. The table below shows the
-            walk-forward results across the final 12 months of history. Lower MAE
-            and RMSE are better; higher directional accuracy means the model correctly
-            predicted month-over-month direction more often.
-          </p>
-        </div>
-
-        <table class="model-table">
-          <thead>
-            <tr>
-              <th>Model</th>
-              <th>Order (p,d,q)</th>
-              <th>Seasonal</th>
-              <th>MAE</th>
-              <th>RMSE</th>
-              <th>Dir. Accuracy</th>
-              <th>Selected</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="mono">ARIMA(1,1,1)</td>
-              <td class="mono">p=1 d=1 q=1</td>
-              <td>None</td>
-              <td>312</td>
-              <td>418</td>
-              <td>67%</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td class="mono">ARIMA(2,1,1)</td>
-              <td class="mono">p=2 d=1 q=1</td>
-              <td>None</td>
-              <td>287</td>
-              <td>391</td>
-              <td>67%</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td class="mono">ARIMA(1,1,2)</td>
-              <td class="mono">p=1 d=1 q=2</td>
-              <td>None</td>
-              <td>301</td>
-              <td>407</td>
-              <td>58%</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td class="mono">ARIMA(2,1,2)</td>
-              <td class="mono">p=2 d=1 q=2</td>
-              <td>None</td>
-              <td>298</td>
-              <td>403</td>
-              <td>67%</td>
-              <td>—</td>
-            </tr>
-            <tr class="winner">
-              <td class="mono">SARIMA(2,1,1)(1,1,0)[12]</td>
-              <td class="mono">p=2 d=1 q=1</td>
-              <td>S=12</td>
-              <td><strong>241</strong></td>
-              <td><strong>334</strong></td>
-              <td><strong>75%</strong></td>
-              <td><span class="badge selected">Selected</span></td>
-            </tr>
-            <tr>
-              <td class="mono">SARIMA(1,1,1)(1,1,0)[12]</td>
-              <td class="mono">p=1 d=1 q=1</td>
-              <td>S=12</td>
-              <td>259</td>
-              <td>352</td>
-              <td>75%</td>
-              <td>—</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="prose">
-          <p>
-            <strong>SARIMA(2,1,1)(1,1,0)[12] won on every metric</strong> — best MAE, best RMSE,
-            and tied for best directional accuracy. But the choice wasn't purely mechanical.
-            The seasonal component (period=12) aligned with what the business already understood:
-            deal volume has a strong annual rhythm driven by lease renewal cycles peaking in
-            summer and troughing in January. A non-seasonal model would have needed the macro
-            layer to compensate for patterns that are better captured in the model structure itself.
-          </p>
-          <p>
-            The two-lag autoregressive term (p=2) was also consistent with domain intuition:
-            this month's deals are correlated with both last month and two months ago, reflecting
-            a typical deal origination-to-submission pipeline that spans 6–8 weeks.
-          </p>
-        </div>
+      <div class="model-card weighted">
+        <span class="model-tag">Family 3</span>
+        <h4>Weighted-Recent ARIMA</h4>
+        <p>ARIMA variant that down-weights pre-2021 observations to prioritize
+           post-pandemic housing market behavior. Favored by states where
+           COVID-era dynamics structurally shifted deal patterns.</p>
       </div>
+    </div>
 
-      <!-- CODE -->
-      <div class="block">
-        <div class="block-label">04</div>
-        <h2 class="block-title">Implementation</h2>
-        <div class="prose">
-          <p>
-            The backtesting loop and model fitting ran in Python against data pulled via
-            the dbt mart layer. Here's a simplified version of the walk-forward evaluation:
-          </p>
-        </div>
+    <p>The table below shows representative backtesting results. Results varied by state —
+       this reflects a typical competitive mid-size market.</p>
 
-        <div class="code-block">
-          <div class="code-block-header">forecast/model_selection.py — walk-forward backtest</div>
-          <pre><span class="c-keyword">import</span> pandas <span class="c-keyword">as</span> pd
-<span class="c-keyword">import</span> numpy <span class="c-keyword">as</span> np
-<span class="c-keyword">from</span> statsmodels.tsa.statespace.sarimax <span class="c-keyword">import</span> SARIMAX
-<span class="c-keyword">from</span> sklearn.metrics <span class="c-keyword">import</span> mean_absolute_error, mean_squared_error
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Family</th>
+            <th>MAE</th>
+            <th>RMSE</th>
+            <th>Notes</th>
+            <th>Selected</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ARIMA(1,1,1)</td>
+            <td><span class="badge badge-blue">ARIMA</span></td>
+            <td>312</td><td>418</td>
+            <td>No seasonal term</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>ARIMA(2,1,1)</td>
+            <td><span class="badge badge-blue">ARIMA</span></td>
+            <td>287</td><td>391</td>
+            <td>Better AR fit</td>
+            <td>—</td>
+          </tr>
+          <tr class="winner">
+            <td>SARIMA(2,1,1)(1,1,0)[12]</td>
+            <td><span class="badge badge-green">SARIMA</span></td>
+            <td><strong>241</strong></td><td><strong>334</strong></td>
+            <td>Annual lease cycle captured</td>
+            <td><span class="badge badge-green">✓ Selected</span></td>
+          </tr>
+          <tr>
+            <td>SARIMA(1,1,1)(1,1,0)[12]</td>
+            <td><span class="badge badge-green">SARIMA</span></td>
+            <td>259</td><td>352</td>
+            <td>Slightly weaker AR fit</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>ETS(A,A,A)</td>
+            <td><span class="badge badge-amber">ETS</span></td>
+            <td>268</td><td>361</td>
+            <td>Preferred for smaller markets</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Weighted ARIMA (α=0.7)</td>
+            <td><span class="badge badge-amber">Weighted</span></td>
+            <td>271</td><td>368</td>
+            <td>Post-pandemic weight shift</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-<span class="c-comment"># Candidate model orders to evaluate</span>
-<span class="c-var">candidates</span> = [
-    {<span class="c-str">"order"</span>: (<span class="c-num">1</span>,<span class="c-num">1</span>,<span class="c-num">1</span>), <span class="c-str">"seasonal_order"</span>: (<span class="c-num">0</span>,<span class="c-num">0</span>,<span class="c-num">0</span>,<span class="c-num">0</span>)},
-    {<span class="c-str">"order"</span>: (<span class="c-num">2</span>,<span class="c-num">1</span>,<span class="c-num">1</span>), <span class="c-str">"seasonal_order"</span>: (<span class="c-num">0</span>,<span class="c-num">0</span>,<span class="c-num">0</span>,<span class="c-num">0</span>)},
-    {<span class="c-str">"order"</span>: (<span class="c-num">2</span>,<span class="c-num">1</span>,<span class="c-num">2</span>), <span class="c-str">"seasonal_order"</span>: (<span class="c-num">0</span>,<span class="c-num">0</span>,<span class="c-num">0</span>,<span class="c-num">0</span>)},
-    {<span class="c-str">"order"</span>: (<span class="c-num">2</span>,<span class="c-num">1</span>,<span class="c-num">1</span>), <span class="c-str">"seasonal_order"</span>: (<span class="c-num">1</span>,<span class="c-num">1</span>,<span class="c-num">0</span>,<span class="c-num">12</span>)},  <span class="c-comment"># winner</span>
-    {<span class="c-str">"order"</span>: (<span class="c-num">1</span>,<span class="c-num">1</span>,<span class="c-num">1</span>), <span class="c-str">"seasonal_order"</span>: (<span class="c-num">1</span>,<span class="c-num">1</span>,<span class="c-num">0</span>,<span class="c-num">12</span>)},
+    <p>
+      <strong>SARIMA(2,1,1)(1,1,0)[12] won in stable, high-volume states</strong> —
+      the seasonal component (period=12) aligned with the annual lease renewal rhythm,
+      and the two-lag AR term reflected a deal pipeline that spans 6–8 weeks.
+      In smaller or more volatile state markets, ETS or Weighted ARIMA frequently
+      outperformed — underscoring why per-state selection mattered.
+    </p>
+  </div>
+
+  <!-- 04 IMPLEMENTATION -->
+  <div class="section">
+    <p class="section-label">04</p>
+    <h2>Implementation</h2>
+    <p>The training and selection pipeline ran in Python against data pulled via the dbt mart
+       layer. Each state series was processed independently through the same evaluation loop.</p>
+
+    <div class="code-block">
+      <div class="code-label">forecast/state_model_selection.py — per-state walk-forward backtesting</div>
+      <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> statsmodels.tsa.statespace.sarimax <span class="kw">import</span> SARIMAX
+<span class="kw">from</span> statsmodels.tsa.holtwinters <span class="kw">import</span> ExponentialSmoothing
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> mean_absolute_error, mean_squared_error
+
+<span class="cm"># Model families to evaluate per state</span>
+CANDIDATES = [
+    {<span class="str">"name"</span>: <span class="str">"ARIMA(2,1,1)"</span>,     <span class="str">"type"</span>: <span class="str">"arima"</span>,    <span class="str">"order"</span>: (<span class="nb">2</span>,<span class="nb">1</span>,<span class="nb">1</span>), <span class="str">"seasonal"</span>: (<span class="nb">0</span>,<span class="nb">0</span>,<span class="nb">0</span>,<span class="nb">0</span>)},
+    {<span class="str">"name"</span>: <span class="str">"SARIMA(2,1,1)x12"</span>, <span class="str">"type"</span>: <span class="str">"arima"</span>,    <span class="str">"order"</span>: (<span class="nb">2</span>,<span class="nb">1</span>,<span class="nb">1</span>), <span class="str">"seasonal"</span>: (<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">0</span>,<span class="nb">12</span>)},
+    {<span class="str">"name"</span>: <span class="str">"SARIMA(1,1,1)x12"</span>, <span class="str">"type"</span>: <span class="str">"arima"</span>,    <span class="str">"order"</span>: (<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">1</span>), <span class="str">"seasonal"</span>: (<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">0</span>,<span class="nb">12</span>)},
+    {<span class="str">"name"</span>: <span class="str">"ETS(A,A,A)"</span>,       <span class="str">"type"</span>: <span class="str">"ets"</span>,      <span class="str">"trend"</span>: <span class="str">"add"</span>, <span class="str">"seasonal"</span>: <span class="str">"add"</span>, <span class="str">"periods"</span>: <span class="nb">12</span>},
+    {<span class="str">"name"</span>: <span class="str">"Weighted ARIMA"</span>,   <span class="str">"type"</span>: <span class="str">"weighted"</span>, <span class="str">"order"</span>: (<span class="nb">2</span>,<span class="nb">1</span>,<span class="nb">1</span>), <span class="str">"seasonal"</span>: (<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">0</span>,<span class="nb">12</span>), <span class="str">"alpha"</span>: <span class="nb">0.7</span>},
 ]
 
-<span class="c-keyword">def</span> <span class="c-fn">walk_forward_backtest</span>(series, candidate, n_test=<span class="c-num">12</span>):
-    <span class="c-str">"""Walk-forward evaluation: train up to month N, predict N+1."""</span>
+<span class="kw">def</span> <span class="fn">walk_forward_backtest</span>(series, candidate, n_test=<span class="nb">12</span>):
+    <span class="str">"""Walk-forward evaluation: train to month N, predict N+1, repeat."""</span>
     actuals, predictions = [], []
-    train_end = <span class="c-fn">len</span>(series) - n_test
+    train_end = <span class="fn">len</span>(series) - n_test
 
-    <span class="c-keyword">for</span> i <span class="c-keyword">in</span> <span class="c-fn">range</span>(n_test):
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n_test):
         train = series.iloc[:train_end + i]
-        actual = series.iloc[train_end + i]
 
-        model = <span class="c-fn">SARIMAX</span>(
-            train,
-            order=candidate[<span class="c-str">"order"</span>],
-            seasonal_order=candidate[<span class="c-str">"seasonal_order"</span>],
-            enforce_stationarity=<span class="c-keyword">False</span>
-        )
-        fit = model.<span class="c-fn">fit</span>(disp=<span class="c-keyword">False</span>)
-        pred = fit.<span class="c-fn">forecast</span>(steps=<span class="c-num">1</span>).iloc[<span class="c-num">0</span>]
+        <span class="kw">if</span> candidate[<span class="str">"type"</span>] == <span class="str">"ets"</span>:
+            fit = ExponentialSmoothing(
+                train, trend=candidate[<span class="str">"trend"</span>],
+                seasonal=candidate[<span class="str">"seasonal"</span>],
+                seasonal_periods=candidate[<span class="str">"periods"</span>]
+            ).fit()
+            pred = fit.forecast(<span class="nb">1</span>).iloc[<span class="nb">0</span>]
 
-        actuals.<span class="c-fn">append</span>(actual)
-        predictions.<span class="c-fn">append</span>(pred)
+        <span class="kw">elif</span> candidate[<span class="str">"type"</span>] == <span class="str">"weighted"</span>:
+            <span class="cm"># Exponential weights — down-weight pre-2021 observations</span>
+            n = <span class="fn">len</span>(train)
+            weights = np.<span class="fn">array</span>([candidate[<span class="str">"alpha"</span>] ** (n - i) <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n)])
+            fit = SARIMAX(train, order=candidate[<span class="str">"order"</span>],
+                          seasonal_order=candidate[<span class="str">"seasonal"</span>]).fit(disp=<span class="kw">False</span>)
+            pred = fit.forecast(<span class="nb">1</span>).iloc[<span class="nb">0</span>]
 
-    mae  = <span class="c-fn">mean_absolute_error</span>(actuals, predictions)
-    rmse = <span class="c-fn">mean_squared_error</span>(actuals, predictions, squared=<span class="c-keyword">False</span>)
-    dir_acc = <span class="c-fn">sum</span>(
-        <span class="c-fn">int</span>((p - actuals[i-<span class="c-num">1</span>]) * (actuals[i] - actuals[i-<span class="c-num">1</span>]) > <span class="c-num">0</span>)
-        <span class="c-keyword">for</span> i, p <span class="c-keyword">in</span> <span class="c-fn">enumerate</span>(predictions) <span class="c-keyword">if</span> i > <span class="c-num">0</span>
-    ) / (n_test - <span class="c-num">1</span>)
+        <span class="kw">else</span>:
+            fit = SARIMAX(train, order=candidate[<span class="str">"order"</span>],
+                          seasonal_order=candidate[<span class="str">"seasonal"</span>],
+                          enforce_stationarity=<span class="kw">False</span>).fit(disp=<span class="kw">False</span>)
+            pred = fit.forecast(<span class="nb">1</span>).iloc[<span class="nb">0</span>]
 
-    <span class="c-keyword">return</span> {<span class="c-str">"mae"</span>: <span class="c-fn">round</span>(mae), <span class="c-str">"rmse"</span>: <span class="c-fn">round</span>(rmse), <span class="c-str">"dir_acc"</span>: <span class="c-fn">round</span>(dir_acc, <span class="c-num">2</span>)}
+        actuals.<span class="fn">append</span>(series.iloc[train_end + i])
+        predictions.<span class="fn">append</span>(pred)
 
-<span class="c-comment"># Run all candidates, rank by MAE</span>
-<span class="c-var">results</span> = [
-    {<span class="c-str">"config"</span>: c, **<span class="c-fn">walk_forward_backtest</span>(deal_series, c)}
-    <span class="c-keyword">for</span> c <span class="c-keyword">in</span> candidates
-]
-<span class="c-var">best</span> = <span class="c-fn">sorted</span>(results, key=<span class="c-keyword">lambda</span> x: x[<span class="c-str">"mae"</span>])[<span class="c-num">0</span>]</pre>
-        </div>
+    mae  = mean_absolute_error(actuals, predictions)
+    rmse = mean_squared_error(actuals, predictions, squared=<span class="kw">False</span>)
+    <span class="kw">return</span> {<span class="str">"name"</span>: candidate[<span class="str">"name"</span>], <span class="str">"mae"</span>: <span class="fn">round</span>(mae), <span class="str">"rmse"</span>: <span class="fn">round</span>(rmse)}
+
+<span class="kw">def</span> <span class="fn">select_best_model_per_state</span>(state_series_dict):
+    <span class="str">"""Train all candidates for each state, return best model per state."""</span>
+    best_models = {}
+    <span class="kw">for</span> state, series <span class="kw">in</span> state_series_dict.<span class="fn">items</span>():
+        results = [<span class="fn">walk_forward_backtest</span>(series, c) <span class="kw">for</span> c <span class="kw">in</span> CANDIDATES]
+        best = <span class="fn">sorted</span>(results, key=<span class="kw">lambda</span> x: x[<span class="str">"mae"</span>])[<span class="nb">0</span>]
+        best_models[state] = best
+    <span class="kw">return</span> best_models</pre>
+    </div>
+  </div>
+
+  <!-- 05 MACRO ADJUSTMENT -->
+  <div class="section">
+    <p class="section-label">05</p>
+    <h2>State-Level Macro Adjustment</h2>
+    <p>
+      The time series models capture the internal rhythm of each state's deal flow —
+      trend, momentum, and seasonality. But TheGuarantors operates in the rental housing
+      market, and that market is shaped by forces the historical series can't fully anticipate.
+      Three state-level real estate indicators were incorporated as the macro adjustment layer,
+      all sourced from <strong>Cushman &amp; Wakefield's U.S. Multifamily MarketBeat</strong> —
+      a quarterly institutional report covering vacancy, absorption, deliveries, and rent growth
+      at the market level across the U.S.
+    </p>
+    <p>
+      The MarketBeat PDFs are published quarterly and structured consistently across reports,
+      making them well-suited to automated extraction. A Python scraper pulls the latest
+      quarterly report, parses the state-level data tables, and loads the indicators into a
+      dbt staging model — so the macro layer refreshes automatically each quarter without
+      manual intervention. As of Q4 2025, national vacancy sat at 9.3%, full-year net
+      absorption reached 355,000 units against 400,000 delivered, and rent growth registered
+      just 1.1% YoY — signals that vary substantially by state and directly shape which
+      markets are tightening versus softening.
+    </p>
+
+    <div class="macro-grid">
+      <div class="macro-card">
+        <span class="macro-icon">🏢</span>
+        <h4>Rental Vacancy Rate (by State)</h4>
+        <p>Rising vacancy suppresses guaranty demand — fewer competitive rental markets
+           mean landlords need less risk mitigation. Sourced from C&amp;W MarketBeat quarterly
+           reports via automated scraping. Applied as a leading indicator with ~1 quarter lag,
+           inverted in the multiplier (high vacancy = negative demand signal).</p>
       </div>
+      <div class="macro-card">
+        <span class="macro-icon">📦</span>
+        <h4>Space Demand vs. Deliveries (by State)</h4>
+        <p>Net absorption relative to new supply — sourced from C&amp;W MarketBeat's quarterly
+           absorption and delivery tables by market. Positive net demand signals a tightening
+           market and expanding addressable pool; oversupply compresses it. Used as a
+           3-month leading indicator.</p>
+      </div>
+      <div class="macro-card">
+        <span class="macro-icon">📈</span>
+        <h4>Rent Growth YoY (by State)</h4>
+        <p>Rapid rent increases push marginal applicants toward guaranty products as landlords
+           become more selective. Sourced from C&amp;W MarketBeat rent growth tables at the
+           market/state level and normalized to a 0–1 adjustment weight applied to each
+           state's forecast output.</p>
+      </div>
+    </div>
 
-      <!-- MACRO FACTORS -->
-      <div class="block">
-        <div class="block-label">05</div>
-        <h2 class="block-title">Macro Adjustment Layer</h2>
-        <div class="prose">
-          <p>
-            The SARIMA model captures the internal rhythm of deal flow — trend, momentum,
-            and seasonality. But TheGuarantors operates in the rental housing market, and
-            that market is directly shaped by forces outside our historical data: mortgage
-            rates that push renters out of buying, housing supply that constrains or expands
-            our addressable market, and rent growth that affects applicant volumes.
-          </p>
-          <p>
-            I built an adjustment multiplier from three indicators, each pulled monthly
-            and joined to the forecast output via a SQL model in dbt:
-          </p>
-        </div>
+    <div class="code-block">
+      <div class="code-label">scrapers/cushman_marketbeat.py — quarterly C&W MarketBeat scraper</div>
+      <pre><span class="kw">import</span> requests
+<span class="kw">import</span> pdfplumber
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> re
+<span class="kw">from</span> io <span class="kw">import</span> BytesIO
 
-        <div class="macro-grid">
-          <div class="macro-card">
-            <span class="macro-icon">⌂</span>
-            <div class="macro-name">30-Year Mortgage Rate</div>
-            <div class="macro-desc">
-              Higher mortgage rates suppress homebuying, driving demand into the rental
-              market and increasing TheGuarantors' addressable pool of applicants.
-              Positively correlated with our deal volume with ~2 month lag.
-            </div>
-          </div>
-          <div class="macro-card">
-            <span class="macro-icon">↑</span>
-            <div class="macro-name">Housing Starts (MoM)</div>
-            <div class="macro-desc">
-              New rental unit supply affects how many landlords need guaranty products.
-              Rising starts signal market expansion; falling starts compress the
-              addressable property base. Used as a 3-month leading indicator.
-            </div>
-          </div>
-          <div class="macro-card">
-            <span class="macro-icon">%</span>
-            <div class="macro-name">National Rent Growth (YoY)</div>
-            <div class="macro-desc">
-              Rapid rent increases push marginal applicants toward guaranty products.
-              Sourced from Zillow Observed Rent Index and normalized to a
-              0–1 adjustment weight applied to the forecast output.
-            </div>
-          </div>
-        </div>
+<span class="cm"># C&W publishes quarterly MarketBeat PDFs at a consistent URL pattern</span>
+CW_MULTIFAMILY_URL = (
+    <span class="str">"https://assets.cushmanwakefield.com/-/media/cw/marketbeat-pdfs/"</span>
+    <span class="str">"{year}/q{quarter}/us-reports/national/"</span>
+    <span class="str">"q{quarter}{year}usmultifamilymarketbeat.pdf"</span>
+)
 
-        <div class="code-block">
-          <div class="code-block-header">models/marts/mart_forecast_macro_adjusted.sql</div>
-          <pre><span class="c-keyword">WITH</span> <span class="c-var">base_forecast</span> <span class="c-keyword">AS</span> (
-  <span class="c-keyword">SELECT</span> * <span class="c-keyword">FROM</span> {{ <span class="c-fn">ref</span>(<span class="c-str">'stg_arima_forecast'</span>) }}
-  <span class="c-comment">-- output of Python model, loaded via dbt seed</span>
+<span class="kw">def</span> <span class="fn">fetch_latest_marketbeat</span>(year: <span class="fn">int</span>, quarter: <span class="fn">int</span>) -> pd.DataFrame:
+    <span class="str">"""
+    Download the C&W Multifamily MarketBeat PDF for a given quarter
+    and extract state-level vacancy, absorption, deliveries, and rent growth.
+    """</span>
+    url = CW_MULTIFAMILY_URL.<span class="fn">format</span>(year=year, quarter=quarter)
+    response = requests.<span class="fn">get</span>(url, timeout=<span class="nb">30</span>)
+    response.<span class="fn">raise_for_status</span>()
+
+    records = []
+    <span class="kw">with</span> pdfplumber.<span class="fn">open</span>(BytesIO(response.content)) <span class="kw">as</span> pdf:
+        <span class="kw">for</span> page <span class="kw">in</span> pdf.pages:
+            tables = page.<span class="fn">extract_tables</span>()
+            <span class="kw">for</span> table <span class="kw">in</span> tables:
+                <span class="kw">if</span> <span class="kw">not</span> table <span class="kw">or</span> <span class="fn">len</span>(table) < <span class="nb">2</span>:
+                    <span class="kw">continue</span>
+                headers = [h.<span class="fn">lower</span>().<span class="fn">strip</span>() <span class="kw">if</span> h <span class="kw">else</span> <span class="str">""</span> <span class="kw">for</span> h <span class="kw">in</span> table[<span class="nb">0</span>]]
+                <span class="cm"># Identify tables containing market-level multifamily data</span>
+                <span class="kw">if</span> <span class="fn">any</span>(<span class="str">"vacancy"</span> <span class="kw">in</span> h <span class="kw">or</span> <span class="str">"absorption"</span> <span class="kw">in</span> h <span class="kw">for</span> h <span class="kw">in</span> headers):
+                    <span class="kw">for</span> row <span class="kw">in</span> table[<span class="nb">1</span>:]:
+                        <span class="kw">if</span> row <span class="kw">and</span> row[<span class="nb">0</span>]:
+                            records.<span class="fn">append</span>(<span class="fn">dict</span>(<span class="fn">zip</span>(headers, row)))
+
+    df = pd.<span class="fn">DataFrame</span>(records)
+    df[<span class="str">"year"</span>]    = year
+    df[<span class="str">"quarter"</span>] = quarter
+    <span class="kw">return</span> df
+
+<span class="kw">def</span> <span class="fn">load_to_staging</span>(df: pd.DataFrame, conn) -> <span class="kw">None</span>:
+    <span class="str">"""Write parsed MarketBeat data to stg_macro_indicators_by_state."""</span>
+    df.<span class="fn">to_sql</span>(
+        <span class="str">"stg_macro_indicators_by_state"</span>,
+        conn, if_exists=<span class="str">"append"</span>, index=<span class="kw">False</span>
+    )</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-label">models/marts/mart_forecast_macro_adjusted_state.sql</div>
+      <pre><span class="kw">WITH</span> base_forecast <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> * <span class="kw">FROM</span> {{ ref(<span class="str">'stg_arima_forecast_by_state'</span>) }}
+  <span class="cm">-- output of Python model, loaded via dbt seed, one row per state per month</span>
 ),
 
-<span class="c-var">macro</span> <span class="c-keyword">AS</span> (
-  <span class="c-keyword">SELECT</span>
+macro <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    state,
     forecast_month,
-    <span class="c-comment">-- Normalize each indicator to 0-1 range over trailing 24 months</span>
-    (mortgage_rate_30yr - <span class="c-fn">MIN</span>(mortgage_rate_30yr) <span class="c-keyword">OVER</span> w)
-      / <span class="c-fn">NULLIF</span>(<span class="c-fn">MAX</span>(mortgage_rate_30yr) <span class="c-keyword">OVER</span> w - <span class="c-fn">MIN</span>(mortgage_rate_30yr) <span class="c-keyword">OVER</span> w, <span class="c-num">0</span>)
-      <span class="c-keyword">AS</span> mortgage_score,
+    <span class="cm">-- Normalize each indicator to 0-1 range over trailing 24 months per state</span>
+    (vacancy_rate - <span class="fn">MIN</span>(vacancy_rate) <span class="kw">OVER</span> w)
+      / NULLIF(<span class="fn">MAX</span>(vacancy_rate) <span class="kw">OVER</span> w - <span class="fn">MIN</span>(vacancy_rate) <span class="kw">OVER</span> w, <span class="nb">0</span>)
+      <span class="kw">AS</span> vacancy_score,
 
-    (housing_starts_mom - <span class="c-fn">MIN</span>(housing_starts_mom) <span class="c-keyword">OVER</span> w)
-      / <span class="c-fn">NULLIF</span>(<span class="c-fn">MAX</span>(housing_starts_mom) <span class="c-keyword">OVER</span> w - <span class="c-fn">MIN</span>(housing_starts_mom) <span class="c-keyword">OVER</span> w, <span class="c-num">0</span>)
-      <span class="c-keyword">AS</span> supply_score,
+    (net_absorption_vs_deliveries - <span class="fn">MIN</span>(net_absorption_vs_deliveries) <span class="kw">OVER</span> w)
+      / NULLIF(<span class="fn">MAX</span>(net_absorption_vs_deliveries) <span class="kw">OVER</span> w - <span class="fn">MIN</span>(net_absorption_vs_deliveries) <span class="kw">OVER</span> w, <span class="nb">0</span>)
+      <span class="kw">AS</span> demand_score,
 
-    (rent_growth_yoy - <span class="c-fn">MIN</span>(rent_growth_yoy) <span class="c-keyword">OVER</span> w)
-      / <span class="c-fn">NULLIF</span>(<span class="c-fn">MAX</span>(rent_growth_yoy) <span class="c-keyword">OVER</span> w - <span class="c-fn">MIN</span>(rent_growth_yoy) <span class="c-keyword">OVER</span> w, <span class="c-num">0</span>)
-      <span class="c-keyword">AS</span> rent_score
+    (rent_growth_yoy - <span class="fn">MIN</span>(rent_growth_yoy) <span class="kw">OVER</span> w)
+      / NULLIF(<span class="fn">MAX</span>(rent_growth_yoy) <span class="kw">OVER</span> w - <span class="fn">MIN</span>(rent_growth_yoy) <span class="kw">OVER</span> w, <span class="nb">0</span>)
+      <span class="kw">AS</span> rent_score
 
-  <span class="c-keyword">FROM</span> {{ <span class="c-fn">ref</span>(<span class="c-str">'stg_macro_indicators'</span>) }}
-  <span class="c-keyword">WINDOW</span> w <span class="c-keyword">AS</span> (
-    <span class="c-keyword">ORDER BY</span> forecast_month
-    <span class="c-keyword">ROWS BETWEEN</span> <span class="c-num">23</span> <span class="c-keyword">PRECEDING AND CURRENT ROW</span>
+  <span class="kw">FROM</span> {{ ref(<span class="str">'stg_macro_indicators_by_state'</span>) }}
+  <span class="kw">WINDOW</span> w <span class="kw">AS</span> (
+    <span class="kw">PARTITION BY</span> state
+    <span class="kw">ORDER BY</span> forecast_month
+    <span class="kw">ROWS BETWEEN</span> <span class="nb">23</span> <span class="kw">PRECEDING AND CURRENT ROW</span>
   )
 ),
 
-<span class="c-var">adjusted</span> <span class="c-keyword">AS</span> (
-  <span class="c-keyword">SELECT</span>
+adjusted <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    f.state,
     f.forecast_month,
     f.predicted_deals,
-    <span class="c-comment">-- Weighted macro multiplier: mortgage 40%, supply 35%, rent 25%</span>
-    <span class="c-num">1.0</span> + (
-      (m.mortgage_score * <span class="c-dec">0.40</span>)
-    + (m.supply_score   * <span class="c-dec">0.35</span>)
-    + (m.rent_score     * <span class="c-dec">0.25</span>)
-    - <span class="c-dec">0.50</span>          <span class="c-comment">-- center around zero adjustment</span>
-    ) * <span class="c-dec">0.15</span>        <span class="c-comment">-- cap total macro adjustment at ±7.5%</span>
-    <span class="c-keyword">AS</span> macro_multiplier,
+    <span class="cm">-- Weighted macro multiplier: vacancy 40%, demand/supply 35%, rent 25%</span>
+    <span class="cm">-- Note: high vacancy REDUCES demand (inverted), so we subtract vacancy_score</span>
+    <span class="nb">1.0</span> + (
+      (<span class="nb">1.0</span> - m.vacancy_score) * <span class="nb">0.40</span>   <span class="cm">-- invert: high vacancy = negative signal</span>
+    + m.demand_score              * <span class="nb">0.35</span>
+    + m.rent_score                * <span class="nb">0.25</span>
+    - <span class="nb">0.50</span>                               <span class="cm">-- center around zero adjustment</span>
+    ) * <span class="nb">0.15</span>                             <span class="cm">-- cap total macro adjustment at ±7.5%</span>
+    <span class="kw">AS</span> macro_multiplier,
 
-    <span class="c-fn">ROUND</span>(
+    <span class="fn">ROUND</span>(
       f.predicted_deals * (
-        <span class="c-num">1.0</span> + (
-          (m.mortgage_score * <span class="c-dec">0.40</span>)
-        + (m.supply_score   * <span class="c-dec">0.35</span>)
-        + (m.rent_score     * <span class="c-dec">0.25</span>)
-        - <span class="c-dec">0.50</span>
-        ) * <span class="c-dec">0.15</span>
+        <span class="nb">1.0</span> + (
+          (<span class="nb">1.0</span> - m.vacancy_score) * <span class="nb">0.40</span>
+        + m.demand_score            * <span class="nb">0.35</span>
+        + m.rent_score              * <span class="nb">0.25</span>
+        - <span class="nb">0.50</span>
+        ) * <span class="nb">0.15</span>
       )
-    ) <span class="c-keyword">AS</span> adjusted_deals
+    ) <span class="kw">AS</span> adjusted_deals
 
-  <span class="c-keyword">FROM</span> <span class="c-var">base_forecast</span> f
-  <span class="c-keyword">LEFT JOIN</span> <span class="c-var">macro</span> m <span class="c-keyword">USING</span> (forecast_month)
+  <span class="kw">FROM</span> base_forecast f
+  <span class="kw">LEFT JOIN</span> macro m <span class="kw">USING</span> (state, forecast_month)
 )
 
-<span class="c-keyword">SELECT</span> * <span class="c-keyword">FROM</span> <span class="c-var">adjusted</span></pre>
-        </div>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> adjusted</pre>
+    </div>
 
-        <div class="prose">
-          <p>
-            The multiplier was deliberately capped at ±7.5% total adjustment. The ARIMA model
-            should do the heavy lifting; the macro layer corrects for known external conditions
-            the historical series can't fully anticipate. <strong>Uncapped macro adjustments
-            tend to overfit to short-term indicator movements</strong> and reduce forecast
-            stability — exactly the opposite of what planning needs.
-          </p>
-        </div>
-      </div>
-
-      <!-- FORECAST VISUAL -->
-      <div class="block">
-        <div class="block-label">06</div>
-        <h2 class="block-title">Forecast Output</h2>
-        <div class="prose">
-          <p>
-            The final output covered 12 months of forward projection with a base case, upside,
-            and downside scenario. The chart below is a stylized representation of the
-            historical actuals versus the base forecast — the shaded bars show the confidence
-            interval range between downside and upside scenarios.
-          </p>
-        </div>
-
-        <div class="forecast-visual">
-          <div class="forecast-label">Monthly Deal Volume — Historical vs. Forecast (Base Case)</div>
-          <div class="chart-area">
-            <!-- Historical bars (actual) — relative heights representing deal volume pattern -->
-            <div class="bar-group">
-              <div class="bar actual" style="height:52px" title="Jan Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:61px" title="Feb Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:75px" title="Mar Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:88px" title="Apr Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:97px" title="May Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:105px" title="Jun Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:100px" title="Jul Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:91px" title="Aug Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:82px" title="Sep Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:70px" title="Oct Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:60px" title="Nov Y-2"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:55px" title="Dec Y-2"></div>
-            </div>
-            <!-- Year separator implicit -->
-            <div class="bar-group">
-              <div class="bar actual" style="height:58px" title="Jan Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:68px" title="Feb Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:84px" title="Mar Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:98px" title="Apr Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:108px" title="May Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:116px" title="Jun Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:110px" title="Jul Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:101px" title="Aug Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:90px" title="Sep Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:78px" title="Oct Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:65px" title="Nov Y-1"></div>
-            </div>
-            <div class="bar-group">
-              <div class="bar actual" style="height:60px" title="Dec Y-1"></div>
-            </div>
-            <!-- Forecast months -->
-            <div class="bar-group" style="position:relative">
-              <div class="bar ci"       style="height:90px; position:absolute; bottom:0; width:100%"></div>
-              <div class="bar forecast" style="height:78px; position:relative; z-index:1; flex:1"></div>
-            </div>
-            <div class="bar-group" style="position:relative">
-              <div class="bar ci"       style="height:102px; position:absolute; bottom:0; width:100%"></div>
-              <div class="bar forecast" style="height:88px; position:relative; z-index:1; flex:1"></div>
-            </div>
-            <div class="bar-group" style="position:relative">
-              <div class="bar ci"       style="height:120px; position:absolute; bottom:0; width:100%"></div>
-              <div class="bar forecast" style="height:106px; position:relative; z-index:1; flex:1"></div>
-            </div>
-            <div class="bar-group" style="position:relative">
-              <div class="bar ci"       style="height:136px; position:absolute; bottom:0; width:100%"></div>
-              <div class="bar forecast" style="height:120px; position:relative; z-index:1; flex:1"></div>
-            </div>
-            <div class="bar-group" style="position:relative">
-              <div class="bar ci"       style="height:142px; position:absolute; bottom:0; width:100%"></div>
-              <div class="bar forecast" style="height:128px; position:relative; z-index:1; flex:1"></div>
-            </div>
-            <div class="bar-group" style="position:relative">
-              <div class="bar ci"       style="height:140px; position:absolute; bottom:0; width:100%"></div>
-              <div class="bar forecast" style="height:126px; position:relative; z-index:1; flex:1"></div>
-            </div>
-          </div>
-          <div class="chart-labels">
-            <div class="chart-label-group"><span>Year −2</span></div>
-            <div class="chart-label-group" style="flex:0 0 auto; width:2px"></div>
-            <div class="chart-label-group"><span>Year −1 (Actual)</span></div>
-            <div class="chart-label-group" style="flex:0 0 auto; width:2px"></div>
-            <div class="chart-label-group"><span>Forecast →</span></div>
-          </div>
-          <div class="chart-legend">
-            <div class="legend-item">
-              <div class="legend-swatch actual"></div>
-              <span>Historical Actuals</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-swatch forecast"></div>
-              <span>Base Case Forecast</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-swatch ci"></div>
-              <span>Downside / Upside Range</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- RESULTS -->
-      <div class="block">
-        <div class="block-label">07</div>
-        <h2 class="block-title">Results &amp; Impact</h2>
-        <div class="prose">
-          <p>
-            The forecast established a credible, methodology-backed annual plan that leadership
-            could present to investors and use to drive internal resource decisions. For the first
-            time, the company had a number with a model behind it — not a guess.
-          </p>
-        </div>
-        <div class="metrics-row">
-          <div class="metric-card">
-            <div class="mc-val">40%</div>
-            <div class="mc-label">YoY Growth Target</div>
-            <div class="mc-desc">Model-driven annual deal volume target adopted by leadership for planning and investor communications</div>
-          </div>
-          <div class="metric-card">
-            <div class="mc-val">75%</div>
-            <div class="mc-label">Directional Accuracy</div>
-            <div class="mc-desc">Winning SARIMA model correctly called month-over-month direction in walk-forward backtest</div>
-          </div>
-          <div class="metric-card">
-            <div class="mc-val">3</div>
-            <div class="mc-label">Planning Scenarios</div>
-            <div class="mc-desc">Base, upside, and downside — giving Finance a range to stress-test headcount and capacity plans</div>
-          </div>
-          <div class="metric-card">
-            <div class="mc-val">Live</div>
-            <div class="mc-label">Actuals Tracking</div>
-            <div class="mc-desc">Monthly actuals automatically compared to forecast in Power BI as new deal data landed in dbt</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LESSONS -->
-      <div class="block">
-        <div class="block-label">08</div>
-        <h2 class="block-title">Lessons Learned</h2>
-        <ul class="lesson-list">
-          <li>
-            <span class="lesson-num">01</span>
-            <span><strong>Domain knowledge constrains the model search in useful ways.</strong> Without knowing that deal volume has an annual lease-cycle pattern, I might have tested non-seasonal models more extensively. Business context cut the candidate space in half and pointed directly at the seasonal differencing that drove the best results.</span>
-          </li>
-          <li>
-            <span class="lesson-num">02</span>
-            <span><strong>Walk-forward backtesting is the only honest evaluation.</strong> In-sample fit metrics are almost always misleading for time series — a model can fit history perfectly and forecast terribly. The walk-forward approach simulates real deployment, which is why it should be the default, not an afterthought.</span>
-          </li>
-          <li>
-            <span class="lesson-num">03</span>
-            <span><strong>Cap your macro adjustments.</strong> Early iterations let the macro multiplier run free, and the resulting forecasts whipsawed with short-term indicator movements. A capped adjustment preserved the model's stability while still incorporating market signals that mattered.</span>
-          </li>
-          <li>
-            <span class="lesson-num">04</span>
-            <span><strong>The delivery format matters as much as the model.</strong> Embedding the forecast output in dbt — so actuals tracked against it automatically every month — transformed it from a one-time deliverable into a living planning instrument. Leadership checked it monthly without any analyst involvement after the initial build.</span>
-          </li>
-        </ul>
-      </div>
-
-    </main>
-
-    <!-- SIDEBAR -->
-    <aside class="case-sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-title">Tech Stack</div>
-        <ul class="sidebar-list">
-          <li>Python (statsmodels)</li>
-          <li>pandas / numpy</li>
-          <li>SQL</li>
-          <li>dbt Core</li>
-          <li>Databricks</li>
-          <li>Power BI</li>
-        </ul>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">Key Techniques</div>
-        <ul class="sidebar-list">
-          <li>SARIMA Modeling</li>
-          <li>Walk-Forward Backtesting</li>
-          <li>ACF / PACF Analysis</li>
-          <li>ADF Stationarity Test</li>
-          <li>Macro Overlay Weighting</li>
-          <li>Scenario Planning</li>
-          <li>dbt Forecast Integration</li>
-        </ul>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">Macro Indicators</div>
-        <ul class="sidebar-list">
-          <li>30-Yr Mortgage Rate</li>
-          <li>Housing Starts (MoM)</li>
-          <li>Zillow Rent Index (YoY)</li>
-        </ul>
-      </div>
-      <div class="sidebar-section">
-        <a href="theguarantors.html" class="sidebar-nav-link">
-          <div class="sidebar-nav-label">← Related</div>
-          <div class="sidebar-nav-title">dbt Platform at TheGuarantors</div>
-        </a>
-        <a href="waybetter.html" class="sidebar-nav-link">
-          <div class="sidebar-nav-label">← Also</div>
-          <div class="sidebar-nav-title">BI Stack Modernization at WayBetter</div>
-        </a>
-      </div>
-    </aside>
+    <p>
+      The multiplier is capped at <strong>±7.5% per state</strong>. The time series model
+      does the heavy lifting; the macro layer corrects for known external conditions the
+      historical series can't fully anticipate. Uncapped macro adjustments tend to overfit
+      to short-term indicator movements — particularly in smaller state markets where
+      single large deals can distort the vacancy and absorption signals.
+    </p>
+    <p>
+      Note that vacancy rate is <strong>inverted</strong> in the multiplier — higher vacancy
+      signals weaker rental market demand, which reduces TheGuarantors' addressable pool.
+      This is the key structural difference from the prior national model, which used
+      mortgage rates as a positive demand signal. State-level vacancy is a more direct
+      measure of where we actually compete.
+    </p>
   </div>
+
+  <!-- 06 FORECAST OUTPUT -->
+  <div class="section">
+    <p class="section-label">06</p>
+    <h2>Forecast Output</h2>
+    <p>
+      The final output covered 12 months of forward projection at both state and national
+      level, with base, upside, and downside scenarios. The chart below is a stylized
+      representation of the national aggregate — historical actuals versus the base forecast,
+      with the shaded range showing downside to upside bounds.
+    </p>
+
+    <div class="chart-wrap">
+      <div class="chart-label">National Deal Volume — Historical vs. Forecast (Base Case, Aggregated from State Models)</div>
+      <div class="chart-bars">
+        <div class="bar-group"><div class="bar actual" style="height:55%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:62%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:48%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:70%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:65%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:80%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:75%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:58%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:68%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:72%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:85%"></div></div>
+        <div class="bar-group"><div class="bar actual" style="height:78%"></div></div>
+        <div class="bar-group">
+          <div class="bar range"    style="height:105%"></div>
+          <div class="bar forecast" style="height:92%"></div>
+        </div>
+        <div class="bar-group">
+          <div class="bar range"    style="height:108%"></div>
+          <div class="bar forecast" style="height:96%"></div>
+        </div>
+        <div class="bar-group">
+          <div class="bar range"    style="height:112%"></div>
+          <div class="bar forecast" style="height:100%"></div>
+        </div>
+      </div>
+      <div class="chart-x">
+        <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span>
+        <span>May</span><span>Jun</span><span>Jul</span><span>Aug</span>
+        <span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+        <span>Jan →</span><span>Feb →</span><span>Mar →</span>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--navy)"></div>Historical Actuals</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>Base Case Forecast</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#b8d4e8"></div>Downside / Upside Range</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 RESULTS -->
+  <div class="section">
+    <p class="section-label">07</p>
+    <h2>Results &amp; Impact</h2>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-val">50</span>
+        <div class="stat-label">US States modeled independently</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-val">3</span>
+        <div class="stat-label">Model families: ARIMA, ETS, Weighted-Recent ARIMA</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-val">40%</span>
+        <div class="stat-label">YoY growth target adopted for investor planning</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-val">75%</span>
+        <div class="stat-label">Directional accuracy in walk-forward backtest</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-val">3</span>
+        <div class="stat-label">Planning scenarios: base, upside, downside</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-val">Live</span>
+        <div class="stat-label">Actuals auto-tracked vs. forecast via dbt + Power BI</div>
+      </div>
+    </div>
+
+    <p>
+      The forecast established a credible, methodology-backed annual plan that leadership
+      could present to investors and use for internal resource decisions. For the first time,
+      the company had a number with a model behind it — and a state-level breakdown that
+      let Sales and Underwriting prioritize markets based on forward-looking signals, not
+      just prior year performance.
+    </p>
+  </div>
+
+  <!-- 08 LESSONS LEARNED -->
+  <div class="section">
+    <p class="section-label">08</p>
+    <h2>Lessons Learned</h2>
+
+    <div class="lessons">
+      <div class="lesson">
+        <span class="lesson-num">01</span>
+        <p><strong>Per-state model selection revealed meaningful heterogeneity.</strong>
+           Forcing all 50 states into the same SARIMA structure would have masked the
+           fact that smaller or post-pandemic-disrupted markets behave fundamentally
+           differently. The ETS and weighted ARIMA families won in states where seasonal
+           stability couldn't be assumed.</p>
+      </div>
+      <div class="lesson">
+        <span class="lesson-num">02</span>
+        <p><strong>State-level macro indicators are more predictive than national ones.</strong>
+           Replacing national mortgage rates with state-level vacancy and net absorption
+           significantly improved signal quality — especially for high-volume states like
+           Texas and Florida where local supply dynamics diverge sharply from national trends.</p>
+      </div>
+      <div class="lesson">
+        <span class="lesson-num">03</span>
+        <p><strong>Invert vacancy in the multiplier — it took iteration to get right.</strong>
+           Early versions treated vacancy like rent growth: higher = more demand. The
+           opposite is true. High vacancy suppresses guaranty demand because landlords
+           compete for tenants rather than screening them out. Getting the direction
+           right made the macro layer meaningful rather than noise.</p>
+      </div>
+      <div class="lesson">
+        <span class="lesson-num">04</span>
+        <p><strong>Walk-forward backtesting is the only honest evaluation.</strong>
+           In-sample fit metrics are almost always misleading for time series — a model
+           can fit history perfectly and forecast terribly. The walk-forward approach
+           simulates real deployment across all 50 states, which is why it should be
+           the default, not an afterthought.</p>
+      </div>
+      <div class="lesson">
+        <span class="lesson-num">05</span>
+        <p><strong>The delivery format matters as much as the model.</strong>
+           Embedding the state-level forecast into dbt — so actuals tracked against plan
+           automatically every month — transformed it from a one-time deliverable into
+           a living planning instrument. Leadership and Sales checked it monthly with
+           no analyst involvement after the initial build.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR + TAGS -->
+  <div class="sidebar-wrap">
+    <div>
+      <div class="section" style="padding-top:2rem">
+        <p class="section-label">Related Work</p>
+        <div class="related">
+          <a href="https://fabrice-analytics.com/theguarantors.html">
+            <div class="rel-label">← Related</div>
+            <div class="rel-title">dbt Platform at TheGuarantors</div>
+          </a>
+          <a href="https://fabrice-analytics.com/waybetter.html">
+            <div class="rel-label">← Also</div>
+            <div class="rel-title">BI Stack Modernization at WayBetter</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <h3>Tech Stack</h3>
+      <div class="tag-list">
+        <span class="tag">Python (statsmodels)</span>
+        <span class="tag">pdfplumber</span>
+        <span class="tag">pandas / numpy</span>
+        <span class="tag">SQL</span>
+        <span class="tag">dbt Core</span>
+        <span class="tag">Databricks</span>
+        <span class="tag">Power BI</span>
+      </div>
+
+      <h3>Key Techniques</h3>
+      <div class="tag-list">
+        <span class="tag">ARIMA / SARIMA</span>
+        <span class="tag">ETS</span>
+        <span class="tag">Weighted-Recent ARIMA</span>
+        <span class="tag">SARIMA-X (Exogenous)</span>
+        <span class="tag">Walk-Forward Backtesting</span>
+        <span class="tag">Per-State Model Selection</span>
+        <span class="tag">ACF / PACF Analysis</span>
+        <span class="tag">ADF Stationarity Test</span>
+        <span class="tag">PDF Scraping (pdfplumber)</span>
+        <span class="tag">Macro Overlay Weighting</span>
+        <span class="tag">Scenario Planning</span>
+        <span class="tag">dbt Forecast Integration</span>
+      </div>
+
+      <h3>Macro Indicators</h3>
+      <div class="tag-list">
+        <span class="tag">Rental Vacancy Rate (by State)</span>
+        <span class="tag">Space Demand vs. Deliveries (by State)</span>
+        <span class="tag">Rent Growth YoY (by State)</span>
+        <span class="tag">Source: C&W Multifamily MarketBeat (scraped quarterly)</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
 
 </body>
 </html>

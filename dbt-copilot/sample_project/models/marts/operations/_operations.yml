@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: mart_occupancy
+    description: Current occupancy by property.
+    columns:
+      - name: property_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: occupancy_rate
+        description: Occupied units divided by total units.
+
+  - name: mart_leasing_funnel
+    description: Applications, approvals and signed leases by property and month.
+
+  - name: mart_portfolio_kpis
+    description: One row per property combining occupancy, trailing-12-month collections and leasing conversion. Feeds the executive dashboard.
+    columns:
+      - name: property_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+
+exposures:
+  - name: executive_portfolio_dashboard
+    label: Executive Portfolio Dashboard
+    type: dashboard
+    maturity: high
+    owner:
+      name: Analytics Engineering
+      email: analytics@example.com
+    description: Weekly leadership view of occupancy, collections and leasing.
+    depends_on:
+      - ref('mart_portfolio_kpis')
+      - ref('mart_delinquency_monthly')

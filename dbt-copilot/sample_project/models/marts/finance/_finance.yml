@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: fct_rent_payments
+    description: >
+      One row per rent obligation (lease x due month), classified on_time, late or missed.
+      Incremental on due_on. Source of truth for collections reporting.
+    columns:
+      - name: payment_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: payment_status
+        description: on_time (paid within 5 days of due date), late, or missed.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['on_time', 'late', 'missed']
+      - name: days_to_pay
+        description: Days from due date to payment. Null when missed.
+
+  - name: mart_delinquency_monthly
+    description: Collections and delinquency by property and due month. Used by the finance team's monthly close.
+    columns:
+      - name: collection_rate
+        description: Rent collected divided by rent due.
+      - name: delinquency_tier
+        description: healthy, watch or critical.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['healthy', 'watch', 'critical']
+
+  - name: mart_collections_by_credit_band
+    description: Collection rate and average days to pay by tenant credit band.

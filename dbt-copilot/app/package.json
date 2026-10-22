@@ -1,0 +1,33 @@
+{
+  "name": "dbt-copilot",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Ask questions about a dbt project's lineage, logic and health in plain English.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && npm run build:api",
+    "build:site": "tsc --noEmit && VITE_API_URL=${VITE_API_URL:-https://tools.fabrice-analytics.com/api/chat} vite build --base=/copilot/ --outDir ../../copilot --emptyOutDir",
+    "test": "vitest run",
+    "artifacts": "../sample_project/build_artifacts.sh",
+    "build:api": "esbuild server/handler.ts --bundle --platform=node --format=esm --target=node20 --external:@anthropic-ai/sdk --outfile=api/chat.js --banner:js=\"// Generated from server/handler.ts by npm run build:api. Do not edit by hand.\""
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "esbuild": "^0.21.5",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10",
+    "vitest": "^2.1.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

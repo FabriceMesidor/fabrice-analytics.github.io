@@ -1,0 +1,26 @@
+name: harbor_lease
+version: "1.0.0"
+config-version: 2
+profile: harbor_lease
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+seeds:
+  harbor_lease:
+    +schema: raw          # seeds stand in for tables an EL tool (e.g. Fivetran) would load
+
+models:
+  harbor_lease:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: ephemeral
+    marts:
+      +materialized: table
+      +schema: marts

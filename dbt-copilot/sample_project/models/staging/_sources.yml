@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+  - name: harbor
+    description: Raw operational tables replicated from the property-management system.
+    schema: main_raw
+    loaded_at_field: _loaded_at
+    tables:
+      - name: raw_properties
+        description: One row per property in the portfolio.
+      - name: raw_units
+        description: One row per rentable unit.
+      - name: raw_tenants
+        description: One row per tenant account, including credit band at signup.
+      - name: raw_applications
+        description: Rental applications submitted through the leasing portal.
+        freshness:
+          warn_after: {count: 24, period: hour}
+          error_after: {count: 48, period: hour}
+        loaded_at_field: "cast(submitted_at as timestamp)"
+      - name: raw_leases
+        description: Signed leases. One row per lease.
+      - name: raw_payments
+        description: Monthly rent obligations and their payment status.
+        freshness:
+          warn_after: {count: 12, period: hour}
+          error_after: {count: 24, period: hour}
+        loaded_at_field: "cast(due_date as timestamp)"
+      - name: raw_maintenance_requests
+        description: Work orders opened by tenants or staff.

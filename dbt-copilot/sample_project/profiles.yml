@@ -1,0 +1,7 @@
+harbor_lease:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: harbor_lease.duckdb
+      threads: 4

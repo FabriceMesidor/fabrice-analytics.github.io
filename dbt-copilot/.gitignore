@@ -1,0 +1,10 @@
+node_modules/
+app/dist/
+sample_project/target/
+sample_project/logs/
+sample_project/dbt_packages/
+sample_project/*.duckdb
+sample_project/*.duckdb.wal
+.vercel
+.env*
+.DS_Store

@@ -1,0 +1,115 @@
+version: 2
+
+models:
+  - name: stg_harbor__properties
+    description: Cleaned properties. One row per property.
+    columns:
+      - name: property_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: property_name
+        description: Marketing name of the property.
+      - name: city
+        description: City where the property is located.
+      - name: state
+        description: Two-letter state code.
+      - name: property_type
+        description: Building type (garden, mid-rise, high-rise, townhome).
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['garden', 'mid-rise', 'high-rise', 'townhome']
+      - name: acquired_on
+        description: Date the property joined the portfolio.
+
+  - name: stg_harbor__units
+    description: Cleaned units. One row per rentable unit.
+    columns:
+      - name: unit_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: property_id
+        description: Property the unit belongs to.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_harbor__properties')
+                field: property_id
+      - name: bedrooms
+        description: Number of bedrooms (0 = studio).
+      - name: market_rent
+        description: Current asking rent in USD.
+
+  - name: stg_harbor__tenants
+    description: Cleaned tenant accounts. Email is lower-cased.
+    columns:
+      - name: tenant_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: email
+        description: Tenant email, lower-cased.
+      - name: credit_band
+        description: Credit band at signup, A (strongest) to D.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['A', 'B', 'C', 'D']
+
+  - name: stg_harbor__applications
+    description: Cleaned rental applications.
+    columns:
+      - name: application_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: application_status
+        description: approved, declined or withdrawn.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['approved', 'declined', 'withdrawn']
+
+  - name: stg_harbor__leases
+    description: Cleaned leases. One row per signed lease.
+    columns:
+      - name: lease_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: unit_id
+        description: Unit under lease.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_harbor__units')
+                field: unit_id
+      - name: monthly_rent
+        description: Contracted monthly rent in USD.
+      - name: lease_status
+        description: active, expired, renewed or terminated_early.
+
+  - name: stg_harbor__payments
+    description: Cleaned rent payments. One row per lease per month due.
+    columns:
+      - name: payment_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: lease_id
+        description: Lease the payment belongs to.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_harbor__leases')
+                field: lease_id
+      - name: due_on
+        description: First day of the month the rent was due.
+      - name: paid_on
+        description: Date funds were received. Null if unpaid.
+      - name: payment_method
+        description: ach, card or check. Should be present whenever paid_on is set.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+                where: "paid_on is not null"
+
+  # stg_harbor__maintenance_requests is intentionally left undocumented and untested

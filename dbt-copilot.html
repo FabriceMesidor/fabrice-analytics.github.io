@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dbt Copilot · Fabrice Mesidor</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #1F4E79;
+      --teal:   #2E86AB;
+      --ink:    #1a1a2e;
+      --gray:   #555;
+      --light:  #f5f7fa;
+      --border: #dde3ec;
+      --code-bg:#1e2030;
+      --green:  #1a6b3a;
+      --amber:  #7B4F00;
+      --font:   'Inter', system-ui, sans-serif;
+      --mono:   'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    body {
+      font-family: var(--font);
+      color: var(--ink);
+      background: #fff;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--navy);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    nav a { color: #fff; text-decoration: none; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.04em; }
+    nav .back { color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 400; }
+    nav .back:hover { color: #fff; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #2c5f8a 100%);
+      color: #fff;
+      padding: 4rem 2rem 3rem;
+    }
+    .hero-inner { max-width: 860px; margin: 0 auto; }
+    .case-label {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(255,255,255,0.6);
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800; line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 em { font-style: italic; color: #7ec8e3; }
+    .hero-sub {
+      font-size: 1.05rem; color: rgba(255,255,255,0.82);
+      max-width: 640px; margin-bottom: 2.5rem; line-height: 1.65;
+    }
+    .meta-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem; padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .meta-item label {
+      display: block; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); margin-bottom: 0.35rem;
+    }
+    .meta-item span { font-size: 0.9rem; color: #fff; font-weight: 500; }
+
+    /* CONTENT */
+    .content { max-width: 860px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+    /* SECTION */
+    .section { padding: 3.5rem 0 0; }
+    .section-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 0.6rem;
+    }
+    .section h2 {
+      font-size: 1.6rem; font-weight: 800; color: var(--navy);
+      margin-bottom: 1.2rem; line-height: 1.2;
+    }
+    .section p { color: #333; margin-bottom: 1rem; }
+    .section p strong { color: var(--navy); }
+
+    blockquote {
+      border-left: 3px solid var(--teal);
+      margin: 1.8rem 0; padding: 1rem 1.5rem;
+      background: var(--light); border-radius: 0 6px 6px 0;
+      font-style: italic; color: #444; font-size: 0.97rem;
+    }
+
+    /* STEPS */
+    .steps { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.5rem; }
+    .step {
+      display: grid; grid-template-columns: 36px 1fr;
+      gap: 1rem; align-items: start;
+    }
+    .step-num {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--navy); color: #fff;
+      font-size: 0.8rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .step-body h4 { font-size: 0.97rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; }
+    .step-body p { font-size: 0.93rem; color: #444; margin: 0; }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th {
+      background: var(--navy); color: #fff;
+      padding: 0.7rem 1rem; text-align: left;
+      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em;
+    }
+    td { padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); color: #333; }
+    tr:nth-child(even) td { background: var(--light); }
+    tr.winner td { font-weight: 600; color: var(--green); }
+    .badge {
+      display: inline-block; padding: 0.15rem 0.5rem;
+      border-radius: 999px; font-size: 0.75rem; font-weight: 600;
+    }
+    .badge-green { background: #e6f4ec; color: var(--green); }
+    .badge-blue  { background: #e8f0f8; color: var(--navy); }
+    .badge-amber { background: #fff4e0; color: var(--amber); }
+
+    /* CODE */
+    .code-block {
+      background: var(--code-bg); border-radius: 8px;
+      margin: 1.5rem 0; overflow: hidden;
+    }
+    .code-label {
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5);
+      font-size: 0.78rem; font-family: var(--mono);
+      padding: 0.5rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    pre {
+      padding: 1.4rem 1.6rem; overflow-x: auto;
+      font-family: var(--mono); font-size: 0.84rem;
+      line-height: 1.65; color: #cdd6f4;
+    }
+    .kw  { color: #cba6f7; }
+    .fn  { color: #89b4fa; }
+    .str { color: #a6e3a1; }
+    .cm  { color: #6c7086; font-style: italic; }
+    .nb  { color: #fab387; }
+
+    /* MACRO CARDS */
+    .macro-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem; margin: 1.5rem 0;
+    }
+    .macro-card {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.4rem; background: var(--light);
+    }
+    .macro-icon {
+      font-size: 1.5rem; margin-bottom: 0.7rem;
+      display: block;
+    }
+    .macro-card h4 {
+      font-size: 0.92rem; font-weight: 700; color: var(--navy);
+      margin-bottom: 0.5rem;
+    }
+    .macro-card p { font-size: 0.87rem; color: #555; margin: 0; line-height: 1.55; }
+
+    /* MODEL FAMILIES */
+    .model-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem; margin: 1.5rem 0;
+    }
+    .model-card {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.4rem; position: relative; overflow: hidden;
+    }
+    .model-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%;
+    }
+    .model-card.arima::before   { background: var(--navy); }
+    .model-card.ets::before     { background: var(--teal); }
+    .model-card.weighted::before { background: #e67e22; }
+    .model-card h4 { font-size: 0.92rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+    .model-card p  { font-size: 0.87rem; color: #555; margin: 0; line-height: 1.55; }
+    .model-tag {
+      display: inline-block; margin-bottom: 0.6rem;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--teal);
+    }
+
+    /* STATS */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem; margin: 2rem 0;
+    }
+    .stat-card {
+      text-align: center; padding: 1.5rem 1rem;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--light);
+    }
+    .stat-val {
+      font-size: 2rem; font-weight: 800; color: var(--navy);
+      line-height: 1; display: block; margin-bottom: 0.5rem;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--gray); line-height: 1.4; }
+
+    /* LESSONS */
+    .lessons { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.2rem; }
+    .lesson {
+      display: grid; grid-template-columns: 28px 1fr;
+      gap: 1rem; align-items: start;
+    }
+    .lesson-num {
+      font-size: 0.78rem; font-weight: 700; color: var(--teal);
+      padding-top: 0.15rem;
+    }
+    .lesson p { font-size: 0.95rem; color: #333; margin: 0; }
+    .lesson p strong { color: var(--navy); }
+
+    /* CHART */
+    .chart-wrap {
+      background: var(--light); border-radius: 10px;
+      padding: 1.5rem; margin: 1.5rem 0;
+      border: 1px solid var(--border);
+    }
+    .chart-label {
+      font-size: 0.8rem; font-weight: 600; color: var(--gray);
+      margin-bottom: 1.2rem; text-align: center;
+    }
+    .chart-bars {
+      display: flex; align-items: flex-end; gap: 4px;
+      height: 120px; padding: 0 1rem;
+    }
+    .bar-group { flex: 1; display: flex; gap: 2px; align-items: flex-end; }
+    .bar {
+      flex: 1; border-radius: 3px 3px 0 0;
+      transition: opacity 0.2s;
+    }
+    .bar:hover { opacity: 0.8; }
+    .bar.actual  { background: var(--navy); }
+    .bar.forecast { background: var(--teal); opacity: 0.7; }
+    .bar.range   { background: #b8d4e8; opacity: 0.5; }
+    .chart-x {
+      display: flex; gap: 4px; padding: 0 1rem;
+      margin-top: 0.5rem;
+    }
+    .chart-x span {
+      flex: 1; text-align: center;
+      font-size: 0.68rem; color: var(--gray);
+    }
+    .chart-legend {
+      display: flex; gap: 1.5rem; justify-content: center;
+      margin-top: 1rem; flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8rem; color: var(--gray);
+    }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 2px;
+    }
+
+    /* SIDEBAR TAGS */
+    .sidebar-wrap {
+      display: grid; grid-template-columns: 1fr 280px;
+      gap: 3rem; align-items: start; margin-top: 3rem;
+      padding-top: 2rem; border-top: 1px solid var(--border);
+    }
+    @media (max-width: 720px) {
+      .sidebar-wrap { grid-template-columns: 1fr; }
+    }
+    .sidebar h3 {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--navy);
+      margin-bottom: 0.8rem; margin-top: 1.4rem;
+    }
+    .sidebar h3:first-child { margin-top: 0; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      background: var(--light); border: 1px solid var(--border);
+      border-radius: 4px; padding: 0.25rem 0.6rem;
+      font-size: 0.8rem; color: #444; font-weight: 500;
+    }
+
+    /* RELATED */
+    .related {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem; margin-top: 2rem;
+    }
+    .related a {
+      display: block; padding: 1.2rem 1.4rem;
+      border: 1px solid var(--border); border-radius: 10px;
+      text-decoration: none; color: var(--navy);
+      background: var(--light);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .related a:hover { border-color: var(--teal); background: #fff; }
+    .related .rel-label { font-size: 0.75rem; color: var(--gray); margin-bottom: 0.3rem; }
+    .related .rel-title { font-size: 0.95rem; font-weight: 700; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 2.5rem 1.2rem 2rem; }
+      .content { padding: 0 1.2rem 4rem; }
+    }
+    .content p code, .content td code, .step-body code { font-family: var(--mono); font-size: .85em; background: var(--light); border: 1px solid var(--border); padding: 0 .3em; border-radius: 3px; }
+  </style>
+<meta name="description" content="dbt Copilot: ask a dbt project about lineage, model logic and data-quality health in plain English. Claude answers by calling read-only tools over real dbt artifacts." />
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://fabrice-analytics.com/index.html">FM / Analytics Engineer</a>
+  <a href="https://fabrice-analytics.com/index.html#work" class="back">← All Work</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <p class="case-label">Build 04 · Personal project · LLM tooling for analytics engineering</p>
+    <h1>dbt <em>Copilot</em></h1>
+    <p class="hero-sub">
+      A chat assistant that answers the questions analytics engineers get every day, such as
+      where a number comes from, what breaks if a model changes, and whether a dashboard can be
+      trusted, straight from a dbt project's own artifacts. Claude never sees a database or writes
+      SQL. It calls six read-only tools over the manifest and run results, and every answer shows
+      the lookups it was based on.
+    </p>
+    <p style="margin-top:1.5rem">
+      <a href="https://fabrice-analytics.com/copilot/" style="font-family:var(--mono);font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:#a8d8f0;text-decoration:none;border-bottom:1px solid rgba(168,216,240,.5)">Open the app →</a>
+      &nbsp;&nbsp;
+      <a href="https://github.com/FabriceMesidor/fabrice-analytics.github.io/tree/main/dbt-copilot" style="font-family:var(--mono);font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:#a8d8f0;text-decoration:none;border-bottom:1px solid rgba(168,216,240,.5)">Read the code →</a>
+    </p>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <label>Type</label>
+        <span>Personal project · open source</span>
+      </div>
+      <div class="meta-item">
+        <label>Data</label>
+        <span>Harbor Lease, a fictional property-management dbt project built for the demo</span>
+      </div>
+      <div class="meta-item">
+        <label>Role</label>
+        <span>Design, engine, backend and UI</span>
+      </div>
+      <div class="meta-item">
+        <label>Stack</label>
+        <span>dbt Core · DuckDB · TypeScript · React · Claude API · Vercel</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div class="section">
+    <p class="section-label">01</p>
+    <h2>The Problem</h2>
+    <p>
+      On a data team that owns dbt, a large share of the week goes to answering questions about the
+      project itself. <strong>Where does this column come from? If I change this staging model, which
+      dashboards move? Is this mart safe to use for the board deck?</strong> The answers already exist in
+      <code>manifest.json</code> and <code>run_results.json</code>, but getting them means clicking through
+      dbt docs, grepping SQL, and remembering which tests failed last night.
+    </p>
+    <p>
+      Generic chat assistants don't help much here. They don't know the project, and when they guess they
+      invent model names and columns. The goal was an assistant that is <strong>grounded</strong>: it can only
+      state what the project's artifacts say, and it shows its work.
+    </p>
+    <blockquote>
+      "Answer from the artifacts, never from memory, and show every lookup behind the answer."
+    </blockquote>
+  </div>
+
+  <div class="section">
+    <p class="section-label">02</p>
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Real dbt artifacts</h4>
+          <p>The demo runs on a dbt project I built for it: 7 sources, 20 models across staging, intermediate
+             and mart layers, 37 tests, an exposure for an executive dashboard, and a few problems planted on
+             purpose. It runs on DuckDB, so <code>dbt build</code> and <code>dbt docs generate</code> produce
+             genuine manifest, run results and catalog files.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>A graph and health engine</h4>
+          <p>A TypeScript engine loads the artifacts into a DAG, resolves loose names ("the delinquency mart")
+             to real nodes, walks lineage in both directions, computes the blast radius of a change, and runs
+             health checks an analytics engineer would run in review.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Claude with six read-only tools</h4>
+          <p>A serverless function gives Claude <code>list_models</code>, <code>search</code>,
+             <code>get_model</code>, <code>get_lineage</code>, <code>get_impact</code> and
+             <code>get_health</code>. The system prompt tells it to answer only from tool results.
+             The loop is capped at six rounds, and on the last one tool use is switched off so it must answer.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Answers you can check</h4>
+          <p>Each answer lists the tool calls it made, highlights the nodes it used in the lineage graph,
+             and links every model name to its columns, tests, flags and SQL.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <h4>Works without the LLM too</h4>
+          <p>If the API isn't reachable, a rule-based router answers the common question shapes with the
+             same tools. Visitors can also load their own <code>manifest.json</code>; it is parsed in the
+             browser and never uploaded.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">03</p>
+    <h2>The Tool Loop</h2>
+    <p>The core is short on purpose. Tools run against the in-memory project, errors go back to the model
+       so it can recover, and every call is recorded for the audit trail.</p>
+    <div class="code-block">
+      <div class="code-label">server/chat.ts · grounded tool loop</div>
+      <pre><span class="kw">for</span> (<span class="kw">let</span> round = <span class="nb">0</span>; round &lt; MAX_ROUNDS; round++) {
+  <span class="kw">const</span> res = <span class="kw">await</span> client.messages.<span class="fn">create</span>({
+    model, max_tokens: <span class="nb">1200</span>, system: <span class="fn">systemPrompt</span>(project), tools: TOOL_DEFS,
+    <span class="cm">// last round: no more tools, write the answer</span>
+    ...(round === MAX_ROUNDS - <span class="nb">1</span> ? { tool_choice: { type: <span class="str">"none"</span> } } : {}),
+    messages,
+  });
+  <span class="kw">const</span> toolUses = res.content.<span class="fn">filter</span>((b) =&gt; b.type === <span class="str">"tool_use"</span>);
+  <span class="kw">if</span> (res.stop_reason !== <span class="str">"tool_use"</span>) <span class="kw">return</span> { text: <span class="fn">textOf</span>(res), focus, trace };
+
+  messages.<span class="fn">push</span>({ role: <span class="str">"assistant"</span>, content: res.content });
+  messages.<span class="fn">push</span>({ role: <span class="str">"user"</span>, content: toolUses.<span class="fn">map</span>((tu) =&gt; {
+    <span class="kw">try</span> {
+      <span class="kw">const</span> { result } = <span class="fn">executeTool</span>(project, tu.name, tu.input);
+      trace.<span class="fn">push</span>({ tool: tu.name, input: tu.input, ok: <span class="kw">true</span> });
+      <span class="kw">return</span> { type: <span class="str">"tool_result"</span>, tool_use_id: tu.id, content: JSON.<span class="fn">stringify</span>(result) };
+    } <span class="kw">catch</span> (e) {
+      <span class="kw">return</span> { type: <span class="str">"tool_result"</span>, tool_use_id: tu.id, content: e.message, is_error: <span class="kw">true</span> };
+    }
+  }) });
+}</pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">04</p>
+    <h2>Health Checks</h2>
+    <p>The checks encode the review I'd do before trusting a model. Each flag carries a severity and a concrete fix.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Check</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td>Failing or warning tests, failed or skipped runs</td><td>The model's data is wrong right now.</td></tr>
+          <tr><td>Exposure at risk</td><td>A dashboard sits downstream of a failure or a warning.</td></tr>
+          <tr><td>No tests, or grain not tested</td><td>Duplicates from a fan-out join would pass silently.</td></tr>
+          <tr><td>Mart reads a raw source</td><td>Staging logic is skipped or copied.</td></tr>
+          <tr><td>Source without freshness</td><td>A stalled load would go unnoticed.</td></tr>
+          <tr><td>Missing model or column docs</td><td>Nobody can use the model without asking its author.</td></tr>
+          <tr><td>Unused staging model, select * in a mart, incremental without unique_key</td><td>Wasted build time, unreviewed schema changes, duplicates.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The planted problems in Harbor Lease include a failing <code>accepted_values</code> test (a new lease status
+       nobody added to the list), a warning on null payment methods, a mart that reads a raw source, and an
+       undocumented, untested model that nothing uses. The engine finds all of them, and a lineage-aware question
+       like "Can I trust the executive dashboard?" surfaces a test warning four models upstream.</p>
+  </div>
+
+  <div class="section">
+    <p class="section-label">05</p>
+    <h2>Design Decisions</h2>
+    <div class="lessons">
+      <div class="lesson">
+        <span class="lesson-num">01</span>
+        <p><strong>Tools over retrieval.</strong> Lineage is a graph question, so embedding chunks of SQL and
+           hoping the right ones come back is the wrong shape. Tools return exact facts, and when a name doesn't
+           exist the tool says so instead of the model inventing one.</p>
+      </div>
+      <div class="lesson">
+        <span class="lesson-num">02</span>
+        <p><strong>Read-only by construction.</strong> The assistant has no warehouse connection and no tool that
+           writes anything. The worst a bad answer can do is be wrong, and the audit trail makes that easy to spot.</p>
+      </div>
+      <div class="lesson">
+        <span class="lesson-num">03</span>
+        <p><strong>Same facts in both modes.</strong> The offline router and Claude call the same functions, so
+           switching modes changes the wording, not the facts. It also made the engine easy to unit test.</p>
+      </div>
+      <div class="lesson">
+        <span class="lesson-num">04</span>
+        <p><strong>Cheap and bounded.</strong> It runs on Claude Haiku by default, with per-visitor rate limits,
+           an origin allowlist and a capped loop. A typical question costs about a tenth of a cent at list prices.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-label">06</p>
+    <h2>What I'd Build Next</h2>
+    <p><strong>Column-level lineage</strong> by parsing compiled SQL with sqlglot, so "where does
+       <code>collection_rate</code> come from" traces through expressions, not just models.
+       <strong>A pull-request bot</strong> that comments the blast radius and new health flags on every dbt PR.
+       <strong>Read-only query execution</strong> against a warehouse, with SQL validation, to answer
+       "why did this metric change" and not just "how is it built".</p>
+  </div>
+
+  <!-- SIDEBAR + TAGS -->
+  <div class="sidebar-wrap">
+    <div>
+      <div class="section" style="padding-top:2rem">
+        <p class="section-label">Related Work</p>
+        <div class="related">
+          <a href="https://fabrice-analytics.com/theguarantors.html">
+            <div class="rel-label">← Related</div>
+            <div class="rel-title">dbt Platform at TheGuarantors</div>
+          </a>
+          <a href="https://fabrice-analytics.com/waybetter.html">
+            <div class="rel-label">← Also</div>
+            <div class="rel-title">BI Stack Modernization at WayBetter</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <h3>Tech Stack</h3>
+      <div class="tag-list">
+        <span class="tag">dbt Core</span>
+        <span class="tag">DuckDB</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">React</span>
+        <span class="tag">Claude API (tool use)</span>
+        <span class="tag">Vercel Functions</span>
+        <span class="tag">Vitest</span>
+      </div>
+
+      <h3>Key Techniques</h3>
+      <div class="tag-list">
+        <span class="tag">Tool-calling agent loop</span>
+        <span class="tag">Grounded answers with audit trail</span>
+        <span class="tag">DAG traversal and impact analysis</span>
+        <span class="tag">dbt manifest and run_results parsing</span>
+        <span class="tag">Data-quality health scoring</span>
+        <span class="tag">Rule-based fallback</span>
+        <span class="tag">Rate limiting and origin allowlist</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+</body>
+</html>

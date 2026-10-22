@@ -1,0 +1,13 @@
+property_id,property_name,city,state,property_type,acquired_at
+P001,Harbor Commons 1,Brooklyn,NY,mid-rise,2019-02-01
+P002,Harbor Yards 2,Queens,NY,high-rise,2020-03-01
+P003,Harbor Terrace 3,Jersey City,NJ,townhome,2021-04-01
+P004,Harbor Landing 4,Newark,NJ,garden,2022-05-01
+P005,Harbor Row 5,Philadelphia,PA,mid-rise,2023-06-01
+P006,Harbor Point 6,Stamford,CT,high-rise,2018-07-01
+P007,Harbor Commons 7,Brooklyn,NY,townhome,2019-08-01
+P008,Harbor Yards 8,Queens,NY,garden,2020-09-01
+P009,Harbor Terrace 9,Jersey City,NJ,mid-rise,2021-10-01
+P010,Harbor Landing 10,Newark,NJ,high-rise,2022-11-01
+P011,Harbor Row 11,Philadelphia,PA,townhome,2023-12-01
+P012,Harbor Point 12,Stamford,CT,garden,2018-01-01

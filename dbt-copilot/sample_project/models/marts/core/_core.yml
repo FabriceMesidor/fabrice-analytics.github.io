@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: dim_properties
+    description: One row per property with its unit count. Grain is property_id.
+    columns:
+      - name: property_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: unit_count
+        description: Number of rentable units in the property.
+
+  - name: dim_units
+    description: One row per unit, flagged occupied when an active lease exists.
+    columns:
+      - name: unit_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: is_occupied
+        description: True when the unit has an active lease today.
+
+  - name: dim_tenants
+    columns:
+      - name: tenant_id
+        data_tests: [unique, not_null]
+
+  - name: fct_leases
+    description: One row per signed lease with rent compared to market rent.
+    columns:
+      - name: lease_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: rent_vs_market_pct
+        description: Contracted rent divided by market rent, minus 1.
+      - name: lease_status
+        description: active, expired, renewed or terminated_early.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['active', 'expired', 'renewed']
